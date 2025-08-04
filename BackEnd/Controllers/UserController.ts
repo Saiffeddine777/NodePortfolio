@@ -6,6 +6,8 @@ import {
   findOneUser,
   modifyOneUser,
   removeOneUser,
+  signInUser,
+  signUpUser,
 } from "../Services/UserService";
 
 export const postUser: (
@@ -20,6 +22,38 @@ export const postUser: (
     res.status(500).json(error);
   }
 };
+
+export const register: (
+  req: Request<any, any, Partial<User>>,
+  res: Response
+) => Promise<void> = async (req, res) => {
+  try {    
+    const result = await signUpUser(req.body as User);
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error sign up user:", error);
+    res.status(500).json(error);
+  }
+};
+
+export const logIn :(
+  req: Request<any, any, {email:string , password:string}>,
+  res: Response
+)=>Promise<void> = async (req,res)=>{
+  try {
+      const result :any= await signInUser(req.body.email , req.body.password)
+      if (result?.message){
+        res.status(result.message==="This email does not exist"?404 :400).json(result)
+      }
+      else{
+        res.cookie("jwtToken",result?.token).status(200).json(result?.user)
+      }
+      
+  } catch (error) {
+    console.error("Error signning In:", error);
+    res.status(500).json(error);
+  }
+}
 
 export const getOneUser: (
   req: Request<{ id: string }>,

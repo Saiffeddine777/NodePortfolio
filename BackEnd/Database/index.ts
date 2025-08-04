@@ -5,11 +5,11 @@ import { User } from "../Entities/User"
 
 export const AppDataSource = new DataSource({
     type :"postgres",
-    host : "localhost",
-    port : 5432,
-    username :"postgres",
-    password: "postgres",
-    database : "nodeportfolio",
+    host : process.env.DATABASE_HOST,
+    port : parseInt(process.env.DATABASE_PORT as string),
+    username :process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    database : process.env.DATABASE_NAME,
     synchronize : true, 
     logging : false, 
     entities :[User],
