@@ -1,11 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from "typeorm";
 
 export enum UserRole {
   ADMIN = "Admin",
   VISITOR = "Visitor",
 }
 
-@Entity({name : "users"})
+@Entity({ name: "users" })
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -15,13 +21,13 @@ export class User {
 
   @Column({
     nullable: false,
-    unique: true 
+    unique: true,
   })
   email!: string;
 
   @Column({
     nullable: false,
-    unique :true
+    unique: true,
   })
   phoneNumber!: string;
 
@@ -46,9 +52,25 @@ export class User {
   lastName!: string;
 
   @Column({
+    nullable: true,
+  })
+  publicId!: string;
+
+  @Column({
+    nullable: true,
+  })
+  imageUrl!: string;
+
+  @Column({
     type: "enum",
     enum: UserRole,
     default: UserRole.VISITOR,
   })
   role!: UserRole;
+  
+  @UpdateDateColumn({ type: "timestamp" })
+  updatedAt!: Date;
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;
 }

@@ -9,6 +9,7 @@ import {
   register,
 } from "../Controllers/UserController";
 import { isAdmin, isValid } from "../Middlewares/VerifyAdmin";
+import uploadImage from "../Handlers/UploadImageHandler";
 
 const UserRouter = Router();
 
@@ -20,11 +21,11 @@ const UserRouter = Router();
 // UserRouter.post("/register", register);
 // UserRouter.post("/login", logIn);
 
-UserRouter.post("/", postUser);
+UserRouter.post("/",uploadImage, postUser);
 UserRouter.get("/:id", getOneUser);
 UserRouter.get("/",  getAllUsers);
 UserRouter.delete("/:id", deleteOneUser);
-UserRouter.put("/:id", putOneUser);
+UserRouter.put("/:id",uploadImage, putOneUser);
 UserRouter.post("/register", register);
 UserRouter.post("/login", logIn);
 

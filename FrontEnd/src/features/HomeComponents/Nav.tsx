@@ -1,81 +1,45 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import { useNavigate } from "react-router";
 
-type Props = {};
 type ArrayOfNavigationButtonProperties = {
   text: string;
   navFunction: () => void;
 }[];
-const Nav = ({}: Props) => {
+
+const Nav = () => {
   const navigate = useNavigate();
-  const navigateToDashBoard: () => void = () => {
-    console.log("Invoked")
-    navigate("/dashboard");
-  };
 
-  const navigateToCV: () => void = () => {
-    navigate("/cv");
-  };
+  const navigateTo = (path: string) => () => navigate(path);
 
-  const navigateToContactUs: () => void = () => {
-    navigate("/contactus");
-  };
-
-  const navigateToSignIn: () => void = () => {
-    navigate("/login");
-  };
-
-  const navigateToSignUp: () => void = () => {
-    navigate("/signup");
-  };
   const buttonTexts: ArrayOfNavigationButtonProperties = [
-    {text: "Dashboard", navFunction: navigateToDashBoard },
-    {text: "Cv" , navFunction : navigateToCV},
-    {text:"Contact Us" , navFunction : navigateToContactUs},
+    { text: "Dashboard", navFunction: navigateTo("/dashboard") },
+    { text: "CV", navFunction: navigateTo("/cv") },
+    { text: "Contact Us", navFunction: navigateTo("/contactus") },
   ];
+
   const userAuthButtons: ArrayOfNavigationButtonProperties = [
-    {text:"Sign-Up" , navFunction : navigateToSignUp }, 
-    {text :"Login" , navFunction : navigateToSignIn}
+    { text: "Sign-Up", navFunction: navigateTo("/signup") },
+    { text: "Login", navFunction: navigateTo("/login") },
   ];
 
   return (
-    <Box
-      sx={{
-        marginTop: "2%",
-        display: "flex",
-        backgroundColor: "ButtonFace",
-        padding: "1%",
-      }}
-    >
-      <Box
-        sx={{
-          marginRight: "60%",
-          display: "flex",
-          gap: "10px",
-        }}
-      >
-        {buttonTexts.map((e, i) => (
-          <Button 
-          onClick={e.navFunction}
-          variant="outlined" sx={{}} key={i}>
-            {e.text}
-          </Button>
-        ))}
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: "10px",
-        }}
-      >
-        {userAuthButtons.map((e, i) => (
-          <Button 
-          onClick={e.navFunction}
-          variant="contained" key={i}>
-            {e.text}
-          </Button>
-        ))}
-      </Box>
+    <Box sx={{ backgroundColor: "#f5f5f5", py: 2, boxShadow: 1 }}>
+      <Container maxWidth="lg" sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {buttonTexts.map((btn, i) => (
+            <Button key={i} variant="outlined" onClick={btn.navFunction}>
+              {btn.text}
+            </Button>
+          ))}
+        </Box>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {userAuthButtons.map((btn, i) => (
+            <Button key={i} variant="contained" onClick={btn.navFunction}>
+              {btn.text}
+            </Button>
+          ))}
+        </Box>
+      </Container>
     </Box>
   );
 };

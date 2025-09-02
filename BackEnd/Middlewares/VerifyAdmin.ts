@@ -65,3 +65,22 @@ export const isValid :(req : Request, res: Response , next :NextFunction)=>Promi
     }
 }
 
+
+export const isValidForFechtingUser :(req : Request, res: Response , next :NextFunction)=>Promise<any>= async(req,res,next)=>{
+    try {
+        const token :string = req.cookies["jwtToken"]
+        if (!token){
+            return res.status(401).json({message : "token is not found"})
+        }
+
+        const decoded   = jwt.verify(token , process.env.JWT_SECRET as string)
+        if (typeof(decoded) ==="string"){
+            return res.status(401).json({message : "Invalid Token"})
+        }
+        next();      
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({message:"Internal server Error", error})
+    }
+}
+

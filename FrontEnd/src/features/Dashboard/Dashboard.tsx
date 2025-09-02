@@ -1,10 +1,27 @@
+import { Box } from "@mui/material";
+import Container from "./Container";
+import Menu from "./Menu";
 
-type Props = {}
+type Props = {};
 
 const Dashboard = ({}: Props) => {
   return (
-    <div>Dashboard</div>
-  )
-}
+    <Box
+      sx={{
+    display: "flex",
+        flexDirection: "row",
+        width: "100vw",
+        height: "100vh",
+        gap: "2%",       // space between Menu and Container
+        p: "2%",         // padding inside the box
+        boxSizing: "border-box", // ensures padding doesn't overflow
+        overflow: "hidden",      // prevent scrollbars if tiny rounding errors occur
+      }}
+    >
+      <Menu />
+      <Container />
+    </Box>
+  );
+};
 
-export default Dashboard
+export default Dashboard;

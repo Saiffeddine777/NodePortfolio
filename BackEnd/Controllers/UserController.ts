@@ -9,13 +9,19 @@ import {
   signInUser,
   signUpUser,
 } from "../Services/UserService";
+import { MulterRequest } from "../Types/ExpressTypes";
 
 export const postUser: (
-  req: Request<any, any, Partial<User>>,
+  req: MulterRequest<any, any, Partial<User>>,
   res: Response
 ) => Promise<void> = async (req, res) => {
+  console.log(req.file)
   try {    
-    const user = await createUser(req.body as User);
+    let fileBuffer: Express.Multer.File | undefined;
+    if (req.file) {
+       fileBuffer = req.file 
+    }
+    const user = await createUser(req.body as User , fileBuffer);
     res.status(201).json(user);
   } catch (error) {
     console.error("Error creating user:", error);
@@ -112,7 +118,7 @@ export const deleteOneUser: (
 };
 
 export const putOneUser: (
-  req: Request<{ id: string }, any, Partial<User>>,
+  req: MulterRequest<{ id: string }, any, Partial<User>>,
   res: Response
 ) => Promise<any> = async (req, res) => {
   try {
@@ -120,8 +126,11 @@ export const putOneUser: (
     if (isNaN(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-
-    const result = await modifyOneUser(userId, req.body);
+    let fileBuffer : Express.Multer.File | undefined;
+    if (req.file){
+      fileBuffer =req.file
+    }
+    const result = await modifyOneUser(userId, req.body , fileBuffer);
     if (result?.affected) {
       return res.status(200).json({ message: "User has been modified" });
     }

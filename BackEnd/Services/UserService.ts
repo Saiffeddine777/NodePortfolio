@@ -4,10 +4,18 @@ import { User } from "../Entities/User";
 import { UserRepository } from "../Repositories/User.repository";
 import { passwordGenerator } from "../Helpers/PasswordGenerator";
 import jwt from "jsonwebtoken";
+import { UploadApiResponse } from "cloudinary";
+import {
+  deleteFromCloudinary,
+  uploadToCLoudinary,
+} from "../Adapters/CloudinaryAdapter";
+import sendEmail from "../Handlers/NodeMailerHandler";
+import { createUserEmailDataFactoryFunction } from "../DataGenerators/EmailData";
 
 export const createUser: (
-  user: User
-) => Promise<Partial<User> | undefined> = async (user) => {
+  user: User,
+  userImage?: Express.Multer.File
+) => Promise<Partial<User> | undefined> = async (user, userImage) => {
   try {
     const generatedPassoword: string = passwordGenerator();
     const hashedPassword: string = await bcrypt.hash(
@@ -15,9 +23,22 @@ export const createUser: (
       parseInt(process.env.BCRYPT_SALT as string)
     );
     user.password = hashedPassword;
-    const userCreated: User = UserRepository.create(user);
+    const cloudinaryUploadResult: UploadApiResponse | undefined =
+      await uploadToCLoudinary(userImage);
+    const userCreated: User = UserRepository.create({
+      ...user,
+      publicId: cloudinaryUploadResult?.public_id,
+      imageUrl: cloudinaryUploadResult?.url,
+    });
     await UserRepository.save(userCreated);
     userCreated.password = generatedPassoword;
+    await sendEmail(
+      createUserEmailDataFactoryFunction(
+        userCreated.userName,
+        generatedPassoword,
+        userCreated.email
+      )
+    );
     return userCreated;
   } catch (error) {
     console.error(error);
@@ -62,7 +83,7 @@ export const signInUser: (
           email: user.email,
           occupation: user.occupation,
           userName: user.userName,
-          phoneNumber: user.phoneNumber
+          phoneNumber: user.phoneNumber,
         },
         token: jwt.sign(
           { id: user.id, email: user.email, role: user.role } as Object,
@@ -101,6 +122,10 @@ export const removeOneUser: (
   id: number
 ) => Promise<DeleteResult | undefined> = async (id) => {
   try {
+    const userToDelete = await UserRepository.findOneBy({ id });
+    if (userToDelete?.publicId) {
+      await deleteFromCloudinary(userToDelete.publicId);
+    }
     return await UserRepository.delete(id);
   } catch (error) {
     console.error(error);
@@ -110,9 +135,20 @@ export const removeOneUser: (
 
 export const modifyOneUser: (
   id: number,
-  data: Partial<User>
-) => Promise<UpdateResult | undefined> = async (id, data) => {
+  data: Partial<User>,
+  userImage?: Express.Multer.File
+) => Promise<UpdateResult | undefined> = async (id, data, userImage) => {
   try {
+    if (userImage) {
+      const userToDeleteTheImageOf: User | null =
+        await UserRepository.findOneBy({ id });
+      userToDeleteTheImageOf?.publicId
+        ? await deleteFromCloudinary(userToDeleteTheImageOf.publicId)
+        : undefined;
+      const result = await uploadToCLoudinary(userImage);
+      data.publicId = result?.public_id;
+      data.imageUrl = result?.url;
+    }
     return await UserRepository.update(id, data);
   } catch (error) {
     console.error(error);
