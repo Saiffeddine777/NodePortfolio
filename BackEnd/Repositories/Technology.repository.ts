@@ -1,4 +1,4 @@
-import { AppDataSource } from "../Database";
 import { Technology } from "../Entities/Technology";
+import { DataSource } from "../EnvDataSource";
 
-export const TechnologyRepository = AppDataSource.getRepository(Technology);
+export const TechnologyRepository = DataSource.getRepository(Technology);

@@ -1,4 +1,4 @@
-import { AppDataSource } from "../Database";
 import { Email } from "../Entities/Email";
+import { DataSource } from "../EnvDataSource";
 
-export const EmailRepository = AppDataSource.getRepository(Email)
+export const EmailRepository = DataSource.getRepository(Email)

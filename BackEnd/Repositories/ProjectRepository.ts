@@ -1,4 +1,4 @@
-import { AppDataSource } from "../Database";
 import Project  from "../Entities/Project";
+import { DataSource } from "../EnvDataSource";
 
-export const ProjectRepository = AppDataSource.getRepository(Project)
+export const ProjectRepository = DataSource.getRepository(Project)
