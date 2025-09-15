@@ -7,8 +7,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-    "strict": true, // optional but recommended
-    "skipLibCheck": true // optional to suppress lib type errors
+    "strict": true, 
+    "skipLibCheck": true ,
+    "outDir": "dist"
+
   },
   "exclude": ["node_modules"]
 }

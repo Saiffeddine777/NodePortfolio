@@ -9,6 +9,10 @@ import TechnogiesList from "./Technologies/TechnogiesList"
 import CreateTechnology from "./Technologies/CreateTechnology"
 import ModifyTechnology from "./Technologies/ModifyTechnology"
 import OneTechnology from "./Technologies/OneTechnology"
+import EmailList from "./Emails/EmailList"
+import OneEmail from "./Emails/OneEmail"
+import ProjectList from "./Projects/ProjectList"
+import OneProject from "./Projects/OneProject"
 
 type Props = {}
 
@@ -34,6 +38,10 @@ const Container = ({}: Props) => {
           <Route Component={CreateTechnology} path="/createtechnology"></Route>
           <Route Component={ModifyTechnology} path ="/modifytechnology" ></Route>
           <Route Component={OneTechnology} path ="/onetechnology" ></Route>
+          <Route Component={EmailList} path={"/emaillist"}></Route>
+          <Route Component={OneEmail} path="/onemail"></Route>
+          <Route Component={ProjectList} path="/projectlist"></Route>
+          <Route Component={OneProject} path="/oneproject"></Route>
         </Routes>
     </Box>
   )

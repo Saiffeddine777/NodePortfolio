@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { Email } from "./Email";
 
 export enum UserRole {
   ADMIN = "Admin",
@@ -67,6 +69,9 @@ export class User {
     default: UserRole.VISITOR,
   })
   role!: UserRole;
+
+  @OneToMany(()=>Email , (email)=>email.user)
+  emails !:Email[]
   
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt!: Date;

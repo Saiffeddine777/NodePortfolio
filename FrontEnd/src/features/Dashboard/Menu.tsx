@@ -4,21 +4,27 @@ import { useNavigate } from "react-router";
 type Props = {};
 
 const Menu = ({}: Props) => {
-  const listOfitems: string[] = ["Emails", "Users", "Technologies"];
-  const navigate = useNavigate()
+  const listOfitems: string[] = ["Emails", "Users", "Technologies" , "Projects"];
+  const navigate = useNavigate();
 
-  const navigateToComp = (element:string)=>{
-     switch (element) {
+  const navigateToComp = (element: string) => {
+    switch (element) {
       case "Users":
-        navigate("/dashboard/userlist")
+        navigate("/dashboard/userlist");
         break;
       case "Technologies":
-        navigate("/dashboard/technologies")
+        navigate("/dashboard/technologies");
         break;
+      case "Emails":
+        navigate("/dashboard/emaillist");
+        break;
+      case "Projects":
+        navigate("/dashboard/projectlist")
+         break ;
       default:
         break;
-     }
-  }
+    }
+  };
   return (
     <Box
       sx={{
@@ -31,10 +37,12 @@ const Menu = ({}: Props) => {
     >
       <List>
         {listOfitems.map((item, key) => {
-          return (            
-              <ListItem key={key}>
-                <ListItemText onClick={()=>navigateToComp(item)}>{item}</ListItemText>
-              </ListItem>
+          return (
+            <ListItem key={key}>
+              <ListItemText onClick={() => navigateToComp(item)}>
+                {item}
+              </ListItemText>
+            </ListItem>
           );
         })}
       </List>
@@ -42,4 +50,4 @@ const Menu = ({}: Props) => {
   );
 };
 
-export default Menu;
+export default Menu; 
