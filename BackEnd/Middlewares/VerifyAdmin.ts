@@ -43,7 +43,7 @@ export const isValid :(req : Request, res: Response , next :NextFunction)=>Promi
         const token :string = req.cookies["jwtToken"]
         if (!token){
             return res.status(401).json({message : "token is not found"})
-        }
+        } 
 
         const decoded   = jwt.verify(token , process.env.JWT_SECRET as string)
         if (typeof(decoded) ==="string"){
