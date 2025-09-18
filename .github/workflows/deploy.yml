@@ -22,9 +22,10 @@ jobs:
           script: |
             cd /srv/myprofile/NodePortfolio
             git pull origin main
-            docker compose pull
-            docker compose up -d --build
-
+            docker compose down
+            docker compose build --no-cache
+            docker compose -up -d
+            
             echo "Cleaning up unused Docker resources..."
             docker container prune -f
             docker image prune -af
