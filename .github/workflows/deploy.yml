@@ -24,7 +24,7 @@ jobs:
             git pull origin main
             docker compose down
             docker compose build --no-cache
-            docker compose -up -d
+            docker compose up -d
             echo "Cleaning up unused Docker resources..."
             docker container prune -f
             docker image prune -f
