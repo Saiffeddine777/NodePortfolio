@@ -1,10 +1,10 @@
-
+import { Typography } from "@mui/material"
 
 type Props = {}
 
 const CV = ({}: Props) => {
   return (
-    <div>CV</div>
+    <Typography>CV</Typography>
   )
 }
 

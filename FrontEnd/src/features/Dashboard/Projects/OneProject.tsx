@@ -1,12 +1,9 @@
 import React from "react";
-import type { Project } from "../../../Types/Project";
+import type { Project } from "../../../Types/Project.ts";
 import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { apiUrl } from "../../../Urls";
-import { useLocation, type Location } from "react-router";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
+import { useLocation, useNavigate, type Location, type NavigateFunction } from "react-router";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 
-// MUI
 import {
   Box,
   Card,
@@ -18,17 +15,19 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
 
 function OneProject({}: Props) {
   const location: Location<{ id?: number }> = useLocation();
   const [project, setProject] = React.useState<Project | null>(null);
+  const navigate:NavigateFunction = useNavigate()
 
   const handleFetchProject: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<Project> = await axios.get(
-        `${apiUrl}/api/projects/${location.state.id}`
+      const result: AxiosResponse<Project> = await api.get(
+        `/api/projects/${location.state.id}`
       );
       setProject(result.data);
     } catch (error) {
@@ -48,7 +47,18 @@ function OneProject({}: Props) {
     );
   }
 
+  const navigateToProjects : ()=>void = ()=>{
+    navigate("/dashboard/projectlist")
+  }
+
   return (
+    <>
+    <Button
+      variant="contained"
+      onClick={navigateToProjects}
+      >
+      back to Projects
+      </Button>  
     <Card
       sx={{ maxWidth: 800, margin: "2rem auto", boxShadow: 4, borderRadius: 3 }}
     >
@@ -102,6 +112,7 @@ function OneProject({}: Props) {
         </Stack>
       </CardContent>
     </Card>
+  </>
   );
 }
 

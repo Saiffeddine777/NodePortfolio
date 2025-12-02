@@ -5,8 +5,8 @@ export enum ProjectCategory {
   OTHER = "Other",
 }
 
-export interface Project {
-  [key:string]: any;
+export type  Project = {
+
   id?: number;
   projectName?: string;
   githubUrl?: string;
@@ -19,4 +19,5 @@ export interface Project {
   file ?: File;
   createdAt?: Date;
   updatedAt?: Date;
-}
+  publicId?: string;
+} 

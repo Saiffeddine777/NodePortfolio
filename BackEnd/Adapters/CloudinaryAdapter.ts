@@ -5,6 +5,7 @@ import {
 } from "cloudinary";
 import cloudinay from "../Config/Cloudinary";
 import { Readable } from "stream";
+import { errorhandler } from "../Handlers/ErrorHandlers";
 
 export const uploadToCLoudinary: (
   file?: Express.Multer.File
@@ -26,26 +27,33 @@ export const uploadToCLoudinary: (
       return result;
     }
   } catch (error) {
-    throw error;
+    errorhandler(error);
   }
 };
 
 export const deleteFromCloudinary: (
-  publicId: string
-) => Promise<DeleteApiResponse> = async (publicId) => {
+  publicId?: string
+) => Promise<DeleteApiResponse | undefined> = async (publicId) => {
   try {
-    const result: DeleteApiResponse = await new Promise((resolve, reject) => {
-      cloudinay.uploader.destroy(
-        publicId,
-        (error?: any, res?: DeleteApiResponse) => {
-          if (error) reject(error);
-          if (!res) reject(new Error("No response From Cloudinary"));
-          else resolve(res);
-        }
-      );
-    });
-    return result;
+    if (publicId) {
+      const result: DeleteApiResponse = await new Promise((resolve, reject) => {
+        cloudinay.uploader.destroy(
+          publicId,
+          (error?: any, res?: DeleteApiResponse) => {
+            if (error) reject(error);
+            if (!res) reject(new Error("No response From Cloudinary"));
+            else resolve(res);
+          }
+        );
+      });
+      return result;
+    }
   } catch (error) {
+    errorhandler(error);
     throw error;
   }
 };
+
+export default {
+  uploadToCLoudinary , deleteFromCloudinary  
+} 

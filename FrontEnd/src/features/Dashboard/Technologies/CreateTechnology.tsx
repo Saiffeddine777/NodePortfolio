@@ -10,18 +10,18 @@ import {
   MenuItem,
 } from "@mui/material";
 import React from "react";
-import { TechType, type Technology } from "../../../Types/Technology";
+import { TechType, type Technology } from "../../../Types/Technology.ts";
 import {
   generateFromDataFromRefObject,
   handleInputChangeIntoARefObject,
-} from "../../../Helpers/FieldVerifier";
+} from "../../../Helpers/FieldVerifier.ts";
 import { useNavigate } from "react-router";
-import axios from "axios";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
-import { handleSuccess } from "../../../Helpers/Sweetalert";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
+import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
-const apiUrl = import.meta.env.VITE_API_URL;
+
 function CreateTechnology({}: Props) {
   const navigate = useNavigate();
   const createdTech = React.useRef<Technology>({
@@ -46,8 +46,8 @@ function CreateTechnology({}: Props) {
 
   const handleSubmit: () => Promise<void> = async () => {
     try {
-      const result = await axios.post(
-        `${apiUrl}/api/technologies/`,
+      const result = await api.post(
+        `/api/technologies/`,
         generateFromDataFromRefObject(createdTech)
       );
       result &&

@@ -12,15 +12,14 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router";
-import type { Technology } from "../../../Types/Technology";
+import type { Technology } from "../../../Types/Technology.ts";
 import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteTechnology from "./DeleteTechnology";
+import DeleteTechnology from "./DeleteTechnology.tsx";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
-const apiUrl: string = import.meta.env.VITE_API_URL;
 function TechnogiesList({}: Props) {
   const navigate = useNavigate();
   const [trigg, setTrigg] = React.useState<boolean>(false);
@@ -28,8 +27,8 @@ function TechnogiesList({}: Props) {
 
   const handleFetchTechnologies: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<Technology[]> = await axios.get(
-        `${apiUrl}/api/technologies`
+      const result: AxiosResponse<Technology[]> = await api.get(
+        `/api/technologies`
       );
       setTechnologies(result.data);
     } catch (error) {
@@ -78,7 +77,11 @@ function TechnogiesList({}: Props) {
               return (
                 <TableRow key={index}>
                   <TableCell>{tech?.id}</TableCell>
-                  <TableCell onClick={()=>navigateToSomething("onetechnology", tech?.id)}>{tech.name}</TableCell>
+                  <TableCell 
+                  sx={{
+                    cursor :"pointer"
+                  }}
+                  onClick={()=>navigateToSomething("onetechnology", tech?.id)}>{tech.name}</TableCell>
                   <TableCell>{tech.technologyType}</TableCell>
                   <TableCell>{tech.score}</TableCell>
                   <TableCell>

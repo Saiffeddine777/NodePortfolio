@@ -1,8 +1,9 @@
 import { SentMessageInfo } from "nodemailer/lib/json-transport";
 import transporter from "../Config/NodeMailer";
 import { SendEmailFunction } from "../Types/UtilityTypes";
+import { errorhandler } from "./ErrorHandlers";
 
-const sendEmail: SendEmailFunction = async (email) => {
+export const sendEmail: SendEmailFunction = async (email) => {
   try {
     const info: SentMessageInfo = await transporter.sendMail({
       to: email.to,
@@ -23,8 +24,9 @@ const sendEmail: SendEmailFunction = async (email) => {
     });
     return `Mail ${info.messageId} sent Succssfully`;
   } catch (error) {
+    errorhandler(error)
     throw error;
   }
 };
 
-export default sendEmail;
+

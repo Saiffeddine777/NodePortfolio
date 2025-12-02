@@ -4,18 +4,20 @@ import {
   createUser,
   findAllUsers,
   findOneUser,
+  loginWithToken,
   modifyOneUser,
   removeOneUser,
   signInUser,
   signUpUser,
 } from "../Services/UserService";
 import { MulterRequest } from "../Types/ExpressTypes";
+import { errorhandler } from "../Handlers/ErrorHandlers";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 export const postUser: (
   req: MulterRequest<any, any, Partial<User>>,
   res: Response
 ) => Promise<void> = async (req, res) => {
-  console.log(req.file)
   try {    
     let fileBuffer: Express.Multer.File | undefined;
     if (req.file) {
@@ -24,7 +26,7 @@ export const postUser: (
     const user = await createUser(req.body as User , fileBuffer);
     res.status(201).json(user);
   } catch (error) {
-    console.error("Error creating user:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
@@ -37,7 +39,7 @@ export const register: (
     const result = await signUpUser(req.body as User);
     res.status(201).json(result);
   } catch (error) {
-    console.error("Error sign up user:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
@@ -52,14 +54,56 @@ export const logIn :(
         res.status(result.message==="This email does not exist"?404 :400).json(result)
       }
       else{
-        res.cookie("jwtToken",result?.token).status(200).json(result?.user)
-      }
+        res.cookie("refreshToken",result?.refreshToken , {
+          httpOnly : true,
+          secure : false ,
+          sameSite :"lax",
+          maxAge : 7 * 24 * 60 * 60 * 1000
+        })
+        .status(200)
+        .json({accessToken: result?.accessToken  ,...result?.user})
+       }
       
   } catch (error) {
-    console.error("Error signning In:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 }
+
+export const logInWithTokenController :(
+  req: Request,
+  res: Response
+)=>Promise<any> = async (req,res)=>{
+  try {
+      const cookieString : string | undefined = req.headers["authorization"]
+
+      if (!cookieString){
+        return res.status(401).json({message : "token is not found"})
+      }
+      const token  =  cookieString.split(" ")[1] 
+      const result : Partial<User> |string = await loginWithToken(token as string)    
+
+      if (typeof result === "object" && result !== null) {
+        return res.status(200).json(result);
+      }
+
+      else{
+        if (result ==="Invalid Token"){
+          return res.status(401).json({message : "User token is expired or invalid "})
+        }else if (result ==="User is not found"){
+          return res.status(404).json ({message :"User is not found "})
+        }
+      }
+      
+  } catch (error) {
+    errorhandler(error)
+    if (error instanceof JsonWebTokenError){
+      return res.status(401).json({message : "User token is expired or invalid "})
+    }
+    res.status(500).json(error);
+  }
+}
+
 
 export const getOneUser: (
   req: Request<{ id: string }>,
@@ -76,7 +120,7 @@ export const getOneUser: (
     }
     return res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching user:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
@@ -89,7 +133,7 @@ export const getAllUsers: (
     const users = await findAllUsers();
     res.status(200).json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
@@ -112,7 +156,7 @@ export const deleteOneUser: (
       .status(400)
       .json({ message: "deletion Gone Wrong Check the data" });
   } catch (error) {
-    console.error("Error deleting user:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
@@ -138,7 +182,23 @@ export const putOneUser: (
       .status(400)
       .json({ message: "Updating Gone Wrong Check the data" });
   } catch (error) {
-    console.error("Error updating user:", error);
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
+
+
+export const logout : (req: Request, res: Response) => Promise <void> =async (req, res)=>{
+  try {
+    res.clearCookie("refreshToken" ,
+      {
+      httpOnly: true,
+      secure: false, // change to true in production with HTTPS
+      sameSite: "lax",
+      }
+    ).status(200).json({message : "Logged out successfully"})
+  } catch (error) {
+    errorhandler(error)
+    res.status(500).json(error)
+  }
+}

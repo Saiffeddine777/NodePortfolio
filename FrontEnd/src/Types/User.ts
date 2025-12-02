@@ -1,4 +1,4 @@
-import type { ApiRequestStatus } from "./Utilities";
+import type { ApiRequestStatus } from "./Utilities.ts";
 
 export enum UserRole {
   ADMIN = "Admin",
@@ -6,21 +6,22 @@ export enum UserRole {
 }
 
 export interface User {
-  id?: number;
-  userName: string;
-  email: string;
-  phoneNumber: string;
-  password?: string;
-  confirmPassword?: string;
-  occupation: string;
-  firstName: string;
-  lastName: string;
-  role?: UserRole;
+  id?: number,
+  userName: string,
+  email: string,
+  phoneNumber: string,
+  password?: string,
+  confirmPassword?: string,
+  occupation: string,
+  firstName: string,
+  lastName: string,
+  role?: UserRole,
   createdAt ?: Date,
   updatedAt ?: Date,
   imageUrl?: string ,
   publicId ?: string,
-  file ?: File |null
+  file ?: File |null,
+  accessToken? : string
 }
 
 

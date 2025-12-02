@@ -1,8 +1,8 @@
 import React from "react";
-import type { User } from "../../../Types/User";
-import axios, { type AxiosResponse } from "axios";
+import type { User } from "../../../Types/User.ts";
+import { type AxiosResponse } from "axios";
 import { useLocation, useNavigate, type Location } from "react-router";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 import {
   Box,
   Typography,
@@ -13,11 +13,12 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import DeleteUser from "./DeleteUser";
+import DeleteUser from "./DeleteUser.tsx";
 import EditIcon from "@mui/icons-material/Edit";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
-const apiUrl = import.meta.env.VITE_API_URL;
+
 const OneUser = ({}: Props) => {
   const navigate = useNavigate();
   const location: Location<{ id?: number }> = useLocation();
@@ -25,8 +26,8 @@ const OneUser = ({}: Props) => {
   const [user, setUser] = React.useState<Partial<User> | null>(null);
   const handleFetchOneUser: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<Partial<User>> = await axios.get(
-        `${apiUrl}/api/users/${id}`
+      const result: AxiosResponse<Partial<User>> = await api.get(
+        `/api/users/${id}`
       );
       setUser(result.data);
     } catch (error) {

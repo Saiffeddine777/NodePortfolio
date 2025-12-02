@@ -1,22 +1,33 @@
 import { Box , Input ,FormControl , InputLabel , FormHelperText, Button } from "@mui/material"
 import React from "react"
-import type { RefChangerFunction } from "../../Types/Utilities"
-import { useAppDispatch } from "../../app/Hooks"
-import { authApiThunk } from "./UserAuthReducer"
+import type { RefChangerFunction } from "../../Types/Utilities.ts"
+import { useAppDispatch, useAppSelector } from "../../app/Hooks.ts"
+import { authApiThunk } from "./UserAuthReducer.ts"
 
-import { type SignInData } from "../../Types/User"
+import { type SignInData } from "../../Types/User.ts"
+import { handleSuccess } from "../../Helpers/Sweetalert.ts"
+import { useNavigate, type NavigateFunction } from "react-router"
+import { handleComponentError } from "../../Helpers/ErrorHandler.ts"
 type Props = {}
 
 
 const LogInUser = ({}: Props) => {
   const dispatch = useAppDispatch()
   const signInCredentials = React.useRef<SignInData>({email :"" , password :""})
+  const user = useAppSelector(state =>state.userAuth)
+  const navigate :NavigateFunction = useNavigate()
 
   const handleChange : RefChangerFunction<SignInData> = (event ,key)=>{
     signInCredentials.current[key] = event.target.value as never
   }
   const handleSignIn : ()=>Promise <void> =async ()=>{
      dispatch(authApiThunk(signInCredentials.current))
+      if (user.error){
+        handleComponentError(user.error)
+        return
+      }
+     handleSuccess("Welcome" , "Successfully Signed In !")
+     navigate("/")
   }
   return (
         <Box sx={{

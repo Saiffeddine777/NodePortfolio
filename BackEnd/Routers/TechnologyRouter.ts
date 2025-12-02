@@ -8,14 +8,15 @@ import {
   getTechnolgiesByTechType
 } from "../Controllers/TechnologyController";
 import uploadImage from "../Handlers/UploadImageHandler";
+import { isAdmin } from "../Middlewares/VerifyAdmin";
 
 const TechnologyRouter = Router();
 
-TechnologyRouter.post("/",uploadImage, postATechnology);
+TechnologyRouter.post("/" , isAdmin,uploadImage, postATechnology);
 TechnologyRouter.get("/", getAllTechnologies);
 TechnologyRouter.get("/:id", getOneTechnology);
-TechnologyRouter.delete("/:id", deleteOneTechnology);
-TechnologyRouter.put("/:id",uploadImage, updateOneTechnology);
+TechnologyRouter.delete("/:id" , isAdmin, deleteOneTechnology);
+TechnologyRouter.put("/:id" ,isAdmin,uploadImage, updateOneTechnology);
 TechnologyRouter.get("/type/:type", getTechnolgiesByTechType);
 
 export default TechnologyRouter;

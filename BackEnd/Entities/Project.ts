@@ -44,6 +44,9 @@ class Project {
   @Column({ nullable: true })
   imageUrl?: string;
 
+  @Column({ nullable: true })
+  publicId?: string;
+
   @Column("text", { array: true, nullable: false })
   techStack!: string[];
 

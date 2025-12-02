@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import Container from "./Container";
-import Menu from "./Menu";
+import Container from "./Container.tsx";
+import Menu from "./Menu.tsx";
 
 type Props = {};
 

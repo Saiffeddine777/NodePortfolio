@@ -9,6 +9,8 @@ import {
   removeOneTechnology,
 } from "../Services/TechnologyService";
 import { MulterRequest } from "../Types/ExpressTypes";
+import { errorhandler } from "../Handlers/ErrorHandlers";
+
 
 export const postATechnology: (
   req: MulterRequest<any, any, Partial<Technology>>,
@@ -22,8 +24,8 @@ export const postATechnology: (
     const tech = await createATechnologie(req.body , file);
     res.status(201).json(tech);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -35,8 +37,8 @@ export const getAllTechnologies: (
     const techs = await findAllTechnologies();
     res.status(200).json(techs);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -48,8 +50,8 @@ export const getTechnolgiesByTechType :(
     const techs = await findTechnologiesByType(req.params.type)
     res.status(200).json(techs);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 }
 
@@ -62,8 +64,8 @@ export const getOneTechnology: (
     const tech =  await findOneTechnology(id);
     res.status(200).json(tech);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -76,8 +78,8 @@ export const deleteOneTechnology: (
     const tech =  await removeOneTechnology(id);
     res.status(200).json(tech);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -95,7 +97,7 @@ export const updateOneTechnology: (
     const tech =  await modifyOneTechnology(id ,data , file);
     res.status(200).json(tech);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };

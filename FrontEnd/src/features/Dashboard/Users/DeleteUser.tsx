@@ -2,22 +2,21 @@ import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import type React from "react";
 import type { SetStateAction } from "react";
-import axios from "axios";
-import { handleSuccess } from "../../../Helpers/Sweetalert";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
+import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 import { useNavigate } from "react-router";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {
   id?: number;
   setTrigg?: React.Dispatch<SetStateAction<boolean>>;
   componentName ?:string
 };
-const apiUrl = import.meta.env.VITE_API_URL;
 const DeleteUser = ({ id, setTrigg , componentName }: Props) => {
   const navigate = useNavigate()
   const handleDeleteUser: () => Promise<void> = async () => {
     try {
-      const result = await axios.delete(`${apiUrl}/api/users/${id}`);
+      const result = await api.delete(`$/api/users/${id}`);
       if (result.data && !componentName) {
         setTrigg && setTrigg((state) => {
             return !state

@@ -7,3 +7,5 @@ export interface EmailInterface {
 }
 
 export type SendEmailFunction = (email :EmailInterface) =>Promise<string>
+
+export type NullableOrUndefined <T> = T |null |undefined

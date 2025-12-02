@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { handleError } from "./Sweetalert";
+import { handleError } from "./Sweetalert.ts"
 
 export const handleComponentError: (error: unknown) => void = (error) => {
   if (error instanceof Error) {

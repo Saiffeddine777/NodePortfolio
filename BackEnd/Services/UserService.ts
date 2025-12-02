@@ -1,19 +1,24 @@
 import { DeleteResult, UpdateResult } from "typeorm";
 import bcrypt from "bcrypt";
 import { User } from "../Entities/User";
-import { UserRepository } from "../Repositories/User.repository";
+import { UserRepository } from "../Repositories/UserRepository";
 import { passwordGenerator } from "../Helpers/PasswordGenerator";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
+
 import { UploadApiResponse } from "cloudinary";
 import {
   deleteFromCloudinary,
   uploadToCLoudinary,
 } from "../Adapters/CloudinaryAdapter";
-import sendEmail from "../Handlers/NodeMailerHandler";
+import { sendEmail } from "../Handlers/NodeMailerHandler";
 import { createUserEmailDataFactoryFunction } from "../DataGenerators/EmailData";
+import { errorhandler } from "../Handlers/ErrorHandlers";
+import { CustomJwtPayLoad } from "../Middlewares/VerifyAdmin";
+import { NullableOrUndefined } from "../Types/UtilityTypes";
+import { generateToken } from "../Adapters/GenerateToken";
 
 export const createUser: (
-  user: User,
+  user: Partial<User>,
   userImage?: Express.Multer.File
 ) => Promise<Partial<User> | undefined> = async (user, userImage) => {
   try {
@@ -32,16 +37,15 @@ export const createUser: (
     });
     await UserRepository.save(userCreated);
     userCreated.password = generatedPassoword;
-    await sendEmail(
-      createUserEmailDataFactoryFunction(
-        userCreated.userName,
-        generatedPassoword,
-        userCreated.email
-      )
+    const emailingObj = createUserEmailDataFactoryFunction(
+      userCreated.userName,
+      generatedPassoword,
+      userCreated.email
     );
+    await sendEmail(emailingObj);
     return userCreated;
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
     throw error;
   }
 };
@@ -50,13 +54,13 @@ export const signUpUser: (user: Partial<User>) => Promise<string> = async (
   user
 ) => {
   try {
-    const hashedPassoword = await bcrypt.hash(user.password as string, 10);
-    user.password = hashedPassoword;
-    const userCreated: User = UserRepository.create(user);
+    const hashedPassoword = await bcrypt.hash(user.password as string, parseInt(process.env.BCRYPT_SALT as string ));
+    const userToCreate =  { ...user, password :hashedPassoword }
+    const userCreated: User = UserRepository.create(userToCreate);
     await UserRepository.save(userCreated);
     return "User has signed up Successfully";
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
     throw error;
   }
 };
@@ -66,7 +70,7 @@ export const signInUser: (
   password: string
 ) => Promise<Object> = async (email, password) => {
   try {
-    const user: User | undefined | null = await UserRepository.findOneBy({
+    const user: NullableOrUndefined<User> = await UserRepository.findOneBy({
       email,
     });
     if (!user) {
@@ -74,6 +78,16 @@ export const signInUser: (
     }
     const verification = await bcrypt.compare(password, user.password);
     if (verification) {
+      const refreshToken: string = generateToken(
+        user,
+        process.env.REFRESH_JWT_SECRET as string,
+        "7d"
+      );
+      const accessToken: string = generateToken(
+        user,
+        process.env.ACCESS_JWT_SECRET as string,
+        "15m"
+      );
       return {
         user: {
           id: user.id,
@@ -84,16 +98,44 @@ export const signInUser: (
           occupation: user.occupation,
           userName: user.userName,
           phoneNumber: user.phoneNumber,
+          publicId: user.publicId,
+          imageUrl: user.imageUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         },
-        token: jwt.sign(
-          { id: user.id, email: user.email, role: user.role } as Object,
-          process.env.JWT_SECRET as string
-        ),
+        refreshToken,
+        accessToken,
       };
     }
     return { message: "Please verify the password" };
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
+    throw error;
+  }
+};
+
+export const loginWithToken: (
+  cookieString: string
+) => Promise<Partial<User> | string> = async (cookieString) => {
+  try {
+    const decoded = jwt.verify(
+      cookieString,
+      process.env.ACCESS_JWT_SECRET as string
+    );
+    if (typeof decoded === "string") {
+      return "Invalid Token";
+    }
+    const payLoad = decoded as CustomJwtPayLoad;
+    const user: NullableOrUndefined<User> = await UserRepository.findOneBy({
+      id: payLoad.id,
+    });
+    if (user) {
+      const {password , ...noPasswordUser} = user
+      return  noPasswordUser;
+    }
+    return "User is not found";
+  } catch (error) {
+    errorhandler(error);
     throw error;
   }
 };
@@ -102,18 +144,18 @@ export const findAllUsers: () => Promise<User[] | undefined> = async () => {
   try {
     return await UserRepository.find();
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
     throw error;
   }
 };
 
 export const findOneUser: (
   id: number
-) => Promise<User | undefined | null> = async (id) => {
+) => Promise<NullableOrUndefined<User>> = async (id) => {
   try {
     return await UserRepository.findOneBy({ id });
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
     throw error;
   }
 };
@@ -123,12 +165,10 @@ export const removeOneUser: (
 ) => Promise<DeleteResult | undefined> = async (id) => {
   try {
     const userToDelete = await UserRepository.findOneBy({ id });
-    if (userToDelete?.publicId) {
-      await deleteFromCloudinary(userToDelete.publicId);
-    }
+    await deleteFromCloudinary(userToDelete?.publicId);
     return await UserRepository.delete(id);
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
     throw error;
   }
 };
@@ -151,7 +191,7 @@ export const modifyOneUser: (
     }
     return await UserRepository.update(id, data);
   } catch (error) {
-    console.error(error);
+    errorhandler(error);
     throw error;
   }
 };

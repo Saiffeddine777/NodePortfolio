@@ -1,5 +1,5 @@
 import React from "react";
-import axios, { type AxiosResponse } from "axios";
+import{ type AxiosResponse } from "axios";
 import { useLocation, useNavigate, type Location } from "react-router";
 import {
   Box,
@@ -9,12 +9,11 @@ import {
   Divider,
   Button,
 } from "@mui/material";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
-import type { EmailInterface } from "../../../Types/EmailType";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
+import type { EmailInterface } from "../../../Types/EmailType.ts";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
-
-const apiUrl: string = import.meta.env.VITE_API_URL;
 
 function OneEmail({}: Props) {
   const navigate = useNavigate();
@@ -23,13 +22,13 @@ function OneEmail({}: Props) {
 
   const handleFetchEmail: () => Promise<void> = async () => {
     try {
-      const response: AxiosResponse<EmailInterface> = await axios.get(
-        `${apiUrl}/api/emails/${location.state.id}`
+      const response: AxiosResponse<EmailInterface> = await api.get(
+        `/api/emails/${location.state.id}`
       );
       setEmail(response.data);
 
       if (!response.data.isRead) {
-        await axios.put(`${apiUrl}/api/emails/${location.state.id}`);
+        await api.put(`/api/emails/${location.state.id}`);
       }
     } catch (error) {
       handleComponentError(error);

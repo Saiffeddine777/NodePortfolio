@@ -13,14 +13,14 @@ import {
 import type { AxiosResponse } from "axios";
 import React from "react";
 import { useNavigate } from "react-router";
-import type { User } from "../../../Types/User";
-import axios from "axios";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
-import DeleteUser from "./DeleteUser";
+import type { User } from "../../../Types/User.tsx";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
+import DeleteUser from "./DeleteUser.tsx";
 import EditIcon from '@mui/icons-material/Edit';
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
-const apiUrl = import.meta.env.VITE_API_URL;
+
 const Userlist = ({}: Props) => {
   
   const navigate = useNavigate();
@@ -41,8 +41,8 @@ const Userlist = ({}: Props) => {
 
   const fetchUserList: () => Promise<void> = async () => {
     try {
-      const response: AxiosResponse<User[]> = await axios.get(
-        `${apiUrl}/api/users`
+      const response: AxiosResponse<User[]> = await api.get(
+        `/api/users`
       );
       setUsers(response.data);
     } catch (error) {
@@ -61,7 +61,9 @@ const Userlist = ({}: Props) => {
   }, [trigg]);
   return (
     <Box>
-      <Button variant="contained" sx={{}} onClick={navigateToCreateAuser}>
+      <Button variant="contained" sx={{
+        mb : "2rem"
+      }} onClick={navigateToCreateAuser}>
         Add a user
       </Button>
       <TableContainer component={Paper}>
@@ -78,7 +80,11 @@ const Userlist = ({}: Props) => {
               return (
                 <TableRow key={user?.id}>
                   <TableCell>{user?.id}</TableCell>
-                  <TableCell onClick={()=>navigateToUserSomething("oneuser",user?.id)}>{user.firstName}</TableCell>
+                  <TableCell 
+                  sx={{
+                    
+                  }}
+                  onClick={()=>navigateToUserSomething("oneuser",user?.id)}>{user.firstName}</TableCell>
                   <TableCell>{user.lastName}</TableCell>
                   <TableCell>{user.occupation}</TableCell>
                   <TableCell>

@@ -1,6 +1,7 @@
 import { DeleteResult, UpdateResult } from "typeorm";
 import { Email } from "../Entities/Email";
 import { EmailRepository } from "../Repositories/EmailRepository";
+import { errorhandler } from "../Handlers/ErrorHandlers";
 
 export const createAnEmail: (email: Partial<Email>) => Promise<Email> = async (
   email
@@ -9,6 +10,7 @@ export const createAnEmail: (email: Partial<Email>) => Promise<Email> = async (
     const emailData: Email = EmailRepository.create(email);
     return await EmailRepository.save(emailData);
   } catch (error) {
+    errorhandler(error)
     throw error;
   }
 };
@@ -17,6 +19,7 @@ export const findAllEmails: () => Promise<Email[]> = async () => {
   try {
     return await EmailRepository.find();
   } catch (error) {
+    errorhandler(error)
     throw error;
   }
 };
@@ -27,6 +30,7 @@ export const findOneEmail: (
   try {
     return await EmailRepository.findOneBy({ id });
   } catch (error) {
+    errorhandler(error)
     throw error;
   }
 };
@@ -37,6 +41,7 @@ export const removeOneEmail : (
     try {
         return await EmailRepository.delete({id}) 
     } catch (error) {
+      errorhandler(error)
         throw error 
     }
 }
@@ -47,6 +52,7 @@ export const updateEmail : (
   try {
     return await EmailRepository.update(id, {isRead : true})
   } catch (error) {
+    errorhandler(error)
     throw error;
   }
 }

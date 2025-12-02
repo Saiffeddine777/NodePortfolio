@@ -1,7 +1,9 @@
 import { DeleteResult } from "typeorm";
 import { Technology, TechType } from "../Entities/Technology";
-import { TechnologyRepository } from "../Repositories/Technology.repository";
+import { TechnologyRepository } from "../Repositories/TechnologyRepository";
 import { deleteFromCloudinary, uploadToCLoudinary } from "../Adapters/CloudinaryAdapter";
+import { errorhandler } from "../Handlers/ErrorHandlers";
+import { NullableOrUndefined } from "../Types/UtilityTypes";
 
 export const createATechnologie: (
   tech: Partial<Technology> , file?: Express.Multer.File
@@ -11,7 +13,7 @@ export const createATechnologie: (
     const created = TechnologyRepository.create({...tech , logoUrl : result?.url , publicId :result?.public_id});
     return await TechnologyRepository.save(created);
   } catch (error) {
-    console.error(error);
+    errorhandler(error)
     throw error;
   }
 };
@@ -20,7 +22,7 @@ export const findAllTechnologies: () => Promise<Technology[]> = async () => {
   try {
     return await TechnologyRepository.find();
   } catch (error) {
-    console.error(error);
+    errorhandler(error)
     throw error;
   }
 };
@@ -34,7 +36,7 @@ export const findTechnologiesByType: (
       },
     });
   } catch (error) {
-    console.error(error);
+    errorhandler(error)
     throw error;
   }
 };
@@ -45,8 +47,8 @@ export const findOneTechnology: (
   try {
     return await TechnologyRepository.findOneBy({ id });
   } catch (error) {
-    console.error(error);
-    throw error;
+    errorhandler(error)
+    throw error; 
   }
 };
 
@@ -54,9 +56,15 @@ export const removeOneTechnology: (
   id: number
 ) => Promise<DeleteResult | undefined> = async (id) => {
   try {
+    const techToDelete :NullableOrUndefined<Technology> = await TechnologyRepository.findOneBy({id})
+
+    if (techToDelete?.publicId) {
+      await deleteFromCloudinary(techToDelete.publicId)
+    }
+
     return await TechnologyRepository.delete(id);
   } catch (error) {
-    console.error(error);
+    errorhandler(error)
     throw error;
   }
 };
@@ -78,7 +86,7 @@ export const modifyOneTechnology: (
 
     return await TechnologyRepository.update(id, data);
   } catch (error) {
-    console.error(error);
+    errorhandler(error)
     throw error;
   }
 };

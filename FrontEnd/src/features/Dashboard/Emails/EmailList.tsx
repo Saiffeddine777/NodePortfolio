@@ -1,8 +1,7 @@
 import React from "react";
-import type { EmailInterface } from "../../../Types/EmailType";
+import type { EmailInterface } from "../../../Types/EmailType.ts";
 import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 import {
   Table,
   TableBody,
@@ -11,19 +10,19 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import DeleteEmail from "./DeleteEmail";
+import DeleteEmail from "./DeleteEmail.tsx";
 import { useNavigate } from "react-router";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
-const apiUrl: string = import.meta.env.VITE_API_URL;
 function EmailList({}: Props) {
   const navigate = useNavigate()
   const [emails, setEmails] = React.useState<EmailInterface[]>([]);
   const [trigg,setTrigg] = React.useState<boolean>(false)
   const handleFetchEmails: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<EmailInterface[]> = await axios.get(
-        `${apiUrl}/api/emails`
+      const result: AxiosResponse<EmailInterface[]> = await api.get(
+        `/api/emails`
       );
       setEmails(result.data);
     } catch (error) {

@@ -8,21 +8,20 @@ import {
   Button,
 } from "@mui/material";
 import React from "react";
-import type { User } from "../../../Types/User";
-import type { RefChangerFunction } from "../../../Types/Utilities";
+import type { User } from "../../../Types/User.ts";
+import type { RefChangerFunction } from "../../../Types/Utilities.ts";
 import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
-import { handleSuccess } from "../../../Helpers/Sweetalert";
-import { verifyEmptiness } from "../../../Helpers/FieldVerifier";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
+import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { verifyEmptiness } from "../../../Helpers/FieldVerifier.ts";
 import { useNavigate } from "react-router";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
 
 const CreateUser = ({}: Props) => {
   const [password, setPassword] = React.useState<string>("")
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
   const signInRef = React.useRef<User>({
     firstName: "",
     lastName: "",
@@ -74,8 +73,8 @@ const CreateUser = ({}: Props) => {
         formData.append(key, value);
       });
       console.log(formData.get("file"));
-      const result: AxiosResponse<User> = await axios.post(
-        `${apiUrl}/api/users/`,
+      const result: AxiosResponse<User> = await api.post(
+        `/api/users/`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -103,7 +102,7 @@ const CreateUser = ({}: Props) => {
         alignItems: "center",
       }}
     >
-      {password!=="" && <Typography>Please copy this password <Typography sx={{fontWeight :"bold"}}>{password}</Typography> It will be deleted when you leave Tab</Typography>}
+      {password!=="" && <Typography>Please copy this password <span style={{fontWeight: "bold"}}>{password}</span> It will be deleted when you leave Tab</Typography>}
       <FormControl
         sx={{
           width: "200%",

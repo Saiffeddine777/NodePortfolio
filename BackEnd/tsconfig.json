@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "node16",
     "target": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-    "strict": true, 
-    "skipLibCheck": true ,
-    "outDir": "dist"
-
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "isolatedModules":  true
   },
   "exclude": ["node_modules"]
 }

@@ -1,15 +1,13 @@
 import { Box ,Button ,Card , Avatar , CardContent, Typography ,Divider , IconButton } from '@mui/material'
 import React from 'react'
-import type { Technology } from '../../../Types/Technology'
+import type { Technology } from '../../../Types/Technology.ts'
 import { useLocation, useNavigate, type Location } from 'react-router'
 import type { AxiosResponse } from 'axios'
-import axios from 'axios'
-import { handleComponentError } from '../../../Helpers/ErrorHandler'
+import { handleComponentError } from '../../../Helpers/ErrorHandler.ts'
 import EditIcon from "@mui/icons-material/Edit";
+import { api } from '../../../ApiService/ApiBrain.ts'
 
 type Props = {}
-
-const apiUrl:string = import.meta.env.VITE_API_URL
 function OneTechnology({}: Props) {
   const navigate = useNavigate()
   const location :Location<{id?:number}> = useLocation();
@@ -17,7 +15,7 @@ function OneTechnology({}: Props) {
   
   const handleFetchOneTech :()=> Promise<void> = async()=>{
     try {
-      const result :AxiosResponse<Technology> = await axios.get(`${apiUrl}/api/technologies/${location.state.id}`)   
+      const result :AxiosResponse<Technology> = await api.get(`/api/technologies/${location.state.id}`)   
       result && setTech(result.data) 
     } catch (error) {
       handleComponentError(error)

@@ -9,11 +9,11 @@ import {
   Button,
 } from "@mui/material";
 import React from "react";
-import type { EmailInterface } from "../Types/EmailType";
-import { handleInputChangeIntoARefObject } from "../Helpers/FieldVerifier";
-import { handleComponentError } from "../Helpers/ErrorHandler";
+import type { EmailInterface } from "../Types/EmailType.ts";
+import { handleInputChangeIntoARefObject } from "../Helpers/FieldVerifier.ts";
+import { handleComponentError } from "../Helpers/ErrorHandler.ts";
 import axios from "axios";
-import { handleSuccess } from "../Helpers/Sweetalert";
+import { handleSuccess } from "../Helpers/Sweetalert.ts";
 
 type Props = {};
 const apiUrl: string = import.meta.env.VITE_API_URL;

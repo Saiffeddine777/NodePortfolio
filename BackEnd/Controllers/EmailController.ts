@@ -7,6 +7,7 @@ import {
   findOneEmail,
   updateEmail
 } from "../Services/EmailService";
+import { errorhandler } from "../Handlers/ErrorHandlers";
 
 export const postAnEMail: (
   req: Request<any, any, Partial<Email>>,
@@ -16,8 +17,8 @@ export const postAnEMail: (
     const email: Email = await createAnEmail(req.body);
     res.status(201).json(email);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -29,6 +30,7 @@ export const getAllEmails: (
     const emails = await findAllEmails();
     res.status(200).json(emails);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
   }
 };
@@ -48,8 +50,8 @@ export const getOneEmail: (
     }
     res.status(200).json(emailIfExists);
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -67,8 +69,8 @@ export const deleteOneEmail: (
       .status(200)
       .json({ message: "Email has been deleted", ...deleteResult });
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 
@@ -86,8 +88,8 @@ export const putOneEmail: (
       .status(200)
       .json({ message: "Email has been updated", ...updateResult });
   } catch (error) {
+    errorhandler(error)
     res.status(500).json(error);
-    throw error;
   }
 };
 

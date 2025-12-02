@@ -7,14 +7,14 @@ import {
   Button,
 } from "@mui/material";
 import React from "react";
-import type { User } from "../../../Types/User";
-import type { RefChangerFunction } from "../../../Types/Utilities";
+import type { User } from "../../../Types/User.tsx";
+import type { RefChangerFunction } from "../../../Types/Utilities.ts";
 import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { handleComponentError } from "../../../Helpers/ErrorHandler";
-import { handleSuccess } from "../../../Helpers/Sweetalert";
-import { generateData } from "../../../Helpers/FieldVerifier";
+import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
+import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { generateData } from "../../../Helpers/FieldVerifier.ts";
 import { useLocation, useNavigate, type Location } from "react-router";
+import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
 
@@ -22,7 +22,6 @@ const ModifyUser = ({}: Props) => {
   const location: Location<{ id?: number }> = useLocation();
   const id = location.state.id;
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
   const signInRef = React.useRef<User>({
     firstName: "",
     lastName: "",
@@ -89,8 +88,8 @@ const ModifyUser = ({}: Props) => {
           formData.append(key, String(value));
         }
       });
-      await axios.put(
-        `${apiUrl}/api/users/${id}`,
+      await api.put(
+        `/api/users/${id}`,
         nonEmptUserObject.file ? formData : nonEmptUserObject,
         formData.has("file")
           ? {
@@ -108,8 +107,8 @@ const ModifyUser = ({}: Props) => {
 
   const fetchUserToModify: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<User> = await axios.get(
-        `${apiUrl}/api/users/${id}`
+      const result: AxiosResponse<User> = await api.get(
+        `/api/users/${id}`
       );
       setUserToModify(result.data);
     } catch (error) {

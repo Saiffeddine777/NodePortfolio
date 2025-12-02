@@ -7,20 +7,19 @@ import {
   Button
 } from "@mui/material";
 import React from "react";
-import type { User } from "../../Types/User";
-import type { RefChangerFunction } from "../../Types/Utilities";
+import type { User } from "../../Types/User.ts";
+import type { RefChangerFunction } from "../../Types/Utilities.ts";
 import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { handleComponentError } from "../../Helpers/ErrorHandler";
-import { handleSuccess } from "../../Helpers/Sweetalert";
-import { verifyEmptiness } from "../../Helpers/FieldVerifier";
+import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
+import { handleSuccess } from "../../Helpers/Sweetalert.ts";
+import { verifyEmptiness } from "../../Helpers/FieldVerifier.ts";
 import { useNavigate } from "react-router";
+import { api } from "../../ApiService/ApiBrain.ts";
 
 type Props = {};
 
 const SignUpUser = ({}: Props) => {
 const navigate = useNavigate()
-const apiUrl = import.meta.env.VITE_API_URL
   const signInRef = React.useRef<User>({
     firstName: "",
     lastName :"",
@@ -43,7 +42,7 @@ const apiUrl = import.meta.env.VITE_API_URL
       console.log(signInRef)
       const {email , userName , lastName , phoneNumber , password ,occupation ,firstName ,confirmPassword} = signInRef.current
       if (password !== confirmPassword ) throw Error ("Password's don't Matchs") ;
-      const result :AxiosResponse<User> = await axios.post(`${apiUrl}/api/users/`  ,verifyEmptiness({email , userName , lastName , phoneNumber , password ,occupation ,firstName}))
+      const result :AxiosResponse<User> = await api.post(`/api/users/`  ,verifyEmptiness({email , userName , lastName , phoneNumber , password ,occupation ,firstName}))
       if (result.data.id){
         handleSuccess("User Insertion" , "User inserted Sucessfully")
         navigate("/login")
