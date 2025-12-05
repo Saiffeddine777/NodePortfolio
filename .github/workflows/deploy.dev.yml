@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Developpment CI/CD Pipeline
 
 on:
   push:
@@ -22,6 +22,8 @@ jobs:
           script: |
             cd /srv/myprofile/dev
             git pull origin dev
+            echo 'Listing the file....'
+            ls -la
             docker compose -f docker-compose.dev.yml down
             docker compose -f docker-compose.dev.yml build --no-cache
             docker compose -f docker-compose.dev.yml up -d
