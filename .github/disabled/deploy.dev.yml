@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
@@ -20,11 +20,11 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd /srv/myprofile/NodePortfolio
-            git pull origin main
-            docker compose down
-            docker compose build --no-cache
-            docker compose up -d
+            cd /srv/myprofile/NodePortfolio/dev
+            git pull origin dev
+            docker compose -f docker-compose.dev.yml down
+            docker compose -f docker-compose.dev.yml build --no-cache
+            docker compose -f docker-compose.dev.yml up -d
             echo "Cleaning up unused Docker resources..."
             docker container prune -f
             docker image prune -f
