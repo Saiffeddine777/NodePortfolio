@@ -13,6 +13,7 @@ import {
 import { MulterRequest } from "../Types/ExpressTypes";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import { JsonWebTokenError } from "jsonwebtoken";
+import { isProduction } from "..";
 
 export const postUser: (
   req: MulterRequest<any, any, Partial<User>>,
@@ -56,8 +57,8 @@ export const logIn :(
       else{
         res.cookie("refreshToken",result?.refreshToken , {
           httpOnly : true,
-          secure : false ,
-          sameSite :"lax",
+          secure : isProduction ,
+          sameSite :isProduction?"none" :"lax",
           maxAge : 7 * 24 * 60 * 60 * 1000
         })
         .status(200)

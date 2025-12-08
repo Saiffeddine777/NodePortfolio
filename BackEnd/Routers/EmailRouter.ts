@@ -4,7 +4,7 @@ import { isAdmin } from "../Middlewares/VerifyAdmin";
 
 const EmailRouter = Router()
 
-EmailRouter.post("/" , isAdmin, postAnEMail)
+EmailRouter.post("/" , postAnEMail)
 EmailRouter.get("/", isAdmin,getAllEmails)
 EmailRouter.get("/:id" , getOneEmail)
 EmailRouter.delete("/:id", isAdmin , deleteOneEmail)

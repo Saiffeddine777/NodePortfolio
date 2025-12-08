@@ -13,10 +13,11 @@ import { refreshTokenController } from "./RefreshToken";
 import { healthCheck } from "./Helpers/ExpressHealthCheck";
 
 const port: number = parseInt(process.env.SERVER_PORT as string);
+const origin : string[] =[ process.env.FRONT_URL as string,"http://localhost:5173"]
 
 const app: express.Express = express();
 app.use(cors({
-  origin : "http://localhost:5173",
+  origin,
   credentials : true, 
   exposedHeaders :["Authorization"]
 }));
@@ -39,3 +40,6 @@ DataSource.initialize()
       .catch((error) => console.log(error));
   })
   .catch((err) => console.error(err));
+
+
+  export const isProduction = process.env.NODE_ENV === "production"
