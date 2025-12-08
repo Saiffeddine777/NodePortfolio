@@ -59,11 +59,9 @@ export const userAuthReducer = createReducer(
         state.authUser = action.payload;
       })
       .addCase(resetUser, (state) => {
-        state = {
-          error: null,
-          status: ApiRequestStatus.STAND_BY,
-          authUser: null,
-        };
+        state.error = null;
+        state.status = ApiRequestStatus.STAND_BY;
+        state.authUser = null;
       });
   }
 );

@@ -1,36 +1,35 @@
-{
-  "compilerOptions": {
-    /* Target & modules */
-    "target": "ES2022",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+  {
+    "compilerOptions": {
+      /* Target & modules */
+      "target": "ES2022",
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
+      "lib": ["ES2022", "DOM", "DOM.Iterable"],
+      /* JSX & React */
+      "jsx": "react-jsx",
+      "useDefineForClassFields": true,
 
-    /* JSX & React */
-    "jsx": "react-jsx",
-    "useDefineForClassFields": true,
+      /* Strict type checking */
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noFallthroughCasesInSwitch": true,
+      "noUncheckedIndexedAccess": true,
 
-    /* Strict type checking */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
+      /* Skip type checks for node_modules for speed */
+      "skipLibCheck": true,
 
-    /* Skip type checks for node_modules for speed */
-    "skipLibCheck": true,
+      /* Experimental / Vite-friendly */
+      "allowImportingTsExtensions": true,
+      "verbatimModuleSyntax": true,
+      "moduleDetection": "force",
 
-    /* Experimental / Vite-friendly */
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
+      /* Allow default import from CommonJS modules */
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
 
-    /* Allow default import from CommonJS modules */
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-
-    /* No emit — Vite handles bundling */
-    "noEmit": true
-  },
-  "include": ["src", "vite.config.ts"]
-}
+      /* No emit — Vite handles bundling */
+      "noEmit": true
+    },
+    "include": ["src", "vite.config.ts"]
+  }
