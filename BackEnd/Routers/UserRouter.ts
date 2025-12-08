@@ -13,7 +13,7 @@ import {
 import uploadImage from "../Handlers/UploadImageHandler";
 import { isAdmin } from "../Middlewares/VerifyAdmin";
 
-const UserRouter = Router();
+export const UserRouter = Router();
 
 UserRouter.post("/register", register);
 UserRouter.post("/login", logIn);
@@ -24,5 +24,3 @@ UserRouter.get("/" ,isAdmin,  getAllUsers);
 UserRouter.delete("/:id",isAdmin, deleteOneUser);
 UserRouter.put("/:id",uploadImage, putOneUser);
 UserRouter.post("/logout" , logout)
-
-export default UserRouter;

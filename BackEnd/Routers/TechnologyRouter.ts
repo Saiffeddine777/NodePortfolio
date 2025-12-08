@@ -10,7 +10,7 @@ import {
 import uploadImage from "../Handlers/UploadImageHandler";
 import { isAdmin } from "../Middlewares/VerifyAdmin";
 
-const TechnologyRouter = Router();
+export const TechnologyRouter = Router();
 
 TechnologyRouter.post("/" , isAdmin,uploadImage, postATechnology);
 TechnologyRouter.get("/", getAllTechnologies);
@@ -19,4 +19,3 @@ TechnologyRouter.delete("/:id" , isAdmin, deleteOneTechnology);
 TechnologyRouter.put("/:id" ,isAdmin,uploadImage, updateOneTechnology);
 TechnologyRouter.get("/type/:type", getTechnolgiesByTechType);
 
-export default TechnologyRouter;
