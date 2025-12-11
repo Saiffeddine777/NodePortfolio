@@ -1,9 +1,17 @@
-import request from "supertest";
-import * as TechnologyController from "../../Controllers/TechnologyController";
-import { testApp } from "../test-server";
-import { isAdmin } from "../../Middlewares/VerifyAdmin";
-import { DeleteResult, UpdateResult } from "typeorm";
-import { Technology, TechType } from "../../Entities/Technology";
+
+
+
+
+
+
+jest.mock("../../Middlewares/VerifyAdmin", () => ({
+  isAdmin: jest.fn((req: any, res: any, next: any) => next()),
+}));
+
+jest.mock("../../Handlers/UploadImageHandler", () => {
+  return (req: any, res: any, next: any) => next();
+});
+
 
 jest.mock("../../Controllers/TechnologyController", () => ({
   deleteOneTechnology: jest.fn(),
@@ -13,14 +21,14 @@ jest.mock("../../Controllers/TechnologyController", () => ({
   getTechnolgiesByTechType: jest.fn(),
   updateOneTechnology: jest.fn(),
 }));
+import request from "supertest";
+import * as TechnologyController from "../../Controllers/TechnologyController";
+import  testApp  from "../test-server";
+import { isAdmin } from "../../Middlewares/VerifyAdmin";
+import { DeleteResult, UpdateResult } from "typeorm";
+import { Technology, TechType } from "../../Entities/Technology";
 
-jest.mock("../../Handlers/UploadImageHandler", () => {
-  return (req: any, res: any, next: any) => next();
-});
 
-jest.mock("../../Middlewares/VerifyAdmin", () => ({
-  isAdmin: jest.fn(),
-}));
 
 describe("TechnologyRouter tests", () => {
   const mockTechnology: Technology = {

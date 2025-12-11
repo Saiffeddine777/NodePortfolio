@@ -13,7 +13,7 @@ import {
 import { MulterRequest } from "../Types/ExpressTypes";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import { JsonWebTokenError } from "jsonwebtoken";
-import { isProduction } from "..";
+import { isProduction } from "../Config/Environement";
 
 export const postUser: (
   req: MulterRequest<any, any, Partial<User>>,

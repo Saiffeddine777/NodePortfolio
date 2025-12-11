@@ -1,8 +1,10 @@
-import { isAdmin } from "../../Middlewares/VerifyAdmin";
-import * as UserController from "../../Controllers/UserController";
-import request from "supertest";
-import { testApp } from "../test-server";
-import { User, UserRole } from "../../Entities/User";
+jest.mock("../../Middlewares/VerifyAdmin", () => ({
+  isAdmin: jest.fn((req: any, res: any, next: any) => next()),
+}));
+
+jest.mock("../../Handlers/UploadImageHandler", () => {
+  return (req: any, res: any, next: any) => next();
+});
 
 jest.mock("../../Controllers/UserController", () => ({
   deleteOneUser: jest.fn(),
@@ -16,13 +18,14 @@ jest.mock("../../Controllers/UserController", () => ({
   putOneUser: jest.fn(),
 }));
 
-jest.mock("../../Handlers/UploadImageHandler", () => {
-  return (req: any, res: any, next: any) => next();
-});
+import { isAdmin } from "../../Middlewares/VerifyAdmin";
+import * as UserController from "../../Controllers/UserController";
+import request from "supertest";
+import testApp  from "../test-server";
+import { User, UserRole } from "../../Entities/User";
 
-jest.mock("../../Middlewares/VerifyAdmin", () => ({
-  isAdmin: jest.fn(),
-}));
+
+
 
 describe("UserRouter Tests", () => {
   const mockUserInput: Partial<User> = {

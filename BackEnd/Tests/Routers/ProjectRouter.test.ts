@@ -1,10 +1,13 @@
-import { testApp } from "../test-server";
-import request, { Response } from "supertest";
-import * as ProjectController from "../../Controllers/ProjectController";
-import Project, { ProjectCategory } from "../../Entities/Project";
-import { DeleteResult, UpdateResult } from "typeorm";
-import { isAdmin } from "../../Middlewares/VerifyAdmin";
 
+
+jest.mock("../../Middlewares/VerifyAdmin", () => ({
+  __esModule: true,
+  isAdmin: jest.fn((req: any, res: any, next: any) => next()),
+}));
+
+jest.mock ("../../Handlers/UploadImageHandler" ,()=>{
+  return (req:any , res:any ,next:any)=>next()
+});
 jest.mock("../../Controllers/ProjectController", () => ({
   deleteOneProject: jest.fn(),
   getAllProjects: jest.fn(),
@@ -13,14 +16,12 @@ jest.mock("../../Controllers/ProjectController", () => ({
   putOneProject: jest.fn(),
 }));
 
-jest.mock ("../../Handlers/UploadImageHandler" ,()=>{
-  return (req:any , res:any ,next:any)=>next()
-});
-
-jest.mock("../../Middlewares/VerifyAdmin", () => ({
-  __esModule: true,
-  isAdmin: jest.fn(),
-}));
+import testApp from "../test-server";
+import request, { Response } from "supertest";
+import * as ProjectController from "../../Controllers/ProjectController";
+import Project, { ProjectCategory } from "../../Entities/Project";
+import { DeleteResult, UpdateResult } from "typeorm";
+import { isAdmin } from "../../Middlewares/VerifyAdmin";
 
 
 describe("Projects Tests", () => {

@@ -1,11 +1,11 @@
-import request from "supertest";
-import { testApp } from "../test-server";
-import * as EmailController from "../../Controllers/EmailController";
-import { Email } from "../../Entities/Email";
-import { UserRole } from "../../Entities/User";
-import { isAdmin } from "../../Middlewares/VerifyAdmin";
-import { DeleteResult } from "typeorm";
-import { UpdateResult } from "typeorm/browser";
+
+
+
+jest.mock("../../Middlewares/VerifyAdmin", () => ({
+  __esModule: true,
+  isAdmin: jest.fn((req: any, res: any, next: any) => next()),
+}));
+
 
 jest.mock("../../Controllers/EmailController", () => ({
   getAllEmails: jest.fn(),
@@ -15,10 +15,16 @@ jest.mock("../../Controllers/EmailController", () => ({
   putOneEmail: jest.fn(),
 }));
 
-jest.mock("../../Middlewares/VerifyAdmin", () => ({
-  __esModule: true,
-  isAdmin: jest.fn(),
-}));
+import request from "supertest";
+import  testApp  from "../test-server";
+import * as EmailController from "../../Controllers/EmailController";
+import { Email } from "../../Entities/Email";
+import { UserRole } from "../../Entities/User";
+import { isAdmin } from "../../Middlewares/VerifyAdmin";
+import { DeleteResult } from "typeorm";
+import { UpdateResult } from "typeorm/browser";
+
+
 
 describe("EmailRouter tests", () => {
    const reqBodyInput: Partial<Email> = {
