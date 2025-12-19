@@ -21,6 +21,8 @@
             username: ${{ secrets.VPS_USER }}
             key: ${{ secrets.VPS_SSH_KEY }}
             script: |
+              set -e 
+
               cd /srv/myprofile/dev
               git pull origin dev
               echo 'Listing the file....'
@@ -28,40 +30,40 @@
 
               echo "Injecting environment variables..."
               cat <<EOF > BackEnd/.env
-              ACCESS_JWT_SECRET=${{ secrets.ACCESS_JWT_SECRET }}
-              REFRESH_JWT_SECRET=${{ secrets.REFRESH_JWT_SECRET }}
-              BCRYPT_SALT=${{ secrets.BCRYPT_SALT }}
-              SERVER_PORT=${{ secrets.SERVER_PORT }}
-              DATABASE_TYPE=${{ secrets.DATABASE_TYPE }}
-              DATABASE_HOST=${{ secrets.DATABASE_HOST }}
-              DATABASE_PORT=${{ secrets.DATABASE_PORT }}
-              DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
-              DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
-              DATABASE_NAME=${{ secrets.DATABASE_NAME }}
-              CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
-              CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
-              CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
-              EMAIL_APP_PASSWORD=${{ secrets.EMAIL_APP_PASSWORD }}
-              EMAIL_APP_ADDRESS=${{ secrets.EMAIL_APP_ADDRESS }}
-              DATABASE_DEV_HOST=${{ secrets.DATABASE_DEV_HOST }}
-              DATABASE_DEV_PORT=${{ secrets.DATABASE_DEV_PORT }}
-              DATABASE_DEV_USERNAME=${{ secrets.DATABASE_DEV_USERNAME }}
-              DATABASE_DEV_PASSWORD=${{ secrets.DATABASE_DEV_PASSWORD }}
-              DATABASE_DEV_NAME=${{ secrets.DATABASE_DEV_NAME }}
-              ADMIN_ACCOUNT=${{ secrets.ADMIN_ACCOUNT }}
-              ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
-              FRONT_URL=${{ secrets.FRONT_URL }}
-              EOF
+ACCESS_JWT_SECRET=${{ secrets.ACCESS_JWT_SECRET }}
+REFRESH_JWT_SECRET=${{ secrets.REFRESH_JWT_SECRET }}
+BCRYPT_SALT=${{ secrets.BCRYPT_SALT }}
+SERVER_PORT=${{ secrets.SERVER_PORT }}
+DATABASE_TYPE=${{ secrets.DATABASE_TYPE }}
+DATABASE_HOST=${{ secrets.DATABASE_HOST }}
+DATABASE_PORT=${{ secrets.DATABASE_PORT }}
+DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
+DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+EMAIL_APP_PASSWORD=${{ secrets.EMAIL_APP_PASSWORD }}
+EMAIL_APP_ADDRESS=${{ secrets.EMAIL_APP_ADDRESS }}
+DATABASE_DEV_HOST=${{ secrets.DATABASE_DEV_HOST }}
+DATABASE_DEV_PORT=${{ secrets.DATABASE_DEV_PORT }}
+DATABASE_DEV_USERNAME=${{ secrets.DATABASE_DEV_USERNAME }}
+DATABASE_DEV_PASSWORD=${{ secrets.DATABASE_DEV_PASSWORD }}
+DATABASE_DEV_NAME=${{ secrets.DATABASE_DEV_NAME }}
+ADMIN_ACCOUNT=${{ secrets.ADMIN_ACCOUNT }}
+ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+FRONT_URL=${{ secrets.FRONT_URL }}
+EOF
 
-              echo "Creating FRONTEND .env.development"
-              cat <<EOF > FrontEnd/.env.development
-              VITE_API_URL=http://${{ secrets.VPS_HOST }}:4001
-              EOF
+#               echo "Creating FRONTEND .env.development"
+#               cat <<EOF > FrontEnd/.env.development
+# VITE_API_URL=http://${{ secrets.VPS_HOST }}:4001
+# EOF
 
               echo "Creating FRONTEND .env.production"
               cat <<EOF > FrontEnd/.env.production
-              VITE_API_URL=${{ secrets.VITE_API_URL }}
-              EOF
+VITE_API_URL=${{ secrets.VITE_API_URL }}
+EOF
 
               echo "Environment variables injected."
               echo "Rebuilding containers..."
@@ -69,7 +71,7 @@
               docker compose -f docker-compose.dev.yml down
               docker compose -f docker-compose.dev.yml build --no-cache
               docker compose -f docker-compose.dev.yml up -d
+              
               echo "Cleaning up unused Docker resources..."
               docker container prune -f
-              docker image prune -f
-              docker network prune -f
+              docker image prune -af
