@@ -1,6 +1,6 @@
-LABEL service="nginx-dev"
-
 FROM nginx:alpine
+
+LABEL service="nginx-dev"
 
 RUN rm /etc/nginx/conf.d/default.conf
 

@@ -43,7 +43,9 @@ services:
     restart: always
   
   nginx-dev:
-    image : nginx:alpine
+    build: 
+      context: ./nginx/dev
+      dockerfile: Dockerfile
     container_name : nginx-dev
     restart : always
     ports :
