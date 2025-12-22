@@ -23,7 +23,7 @@ export const refreshTokenController: (
           { ...(cleanPayload as Object) },
           process.env.ACCESS_JWT_SECRET as string,
           { expiresIn: "15m" }
-        );
+        ); 
         res.status(200).json({ newAccessToken });
     }
   } catch (error) {
