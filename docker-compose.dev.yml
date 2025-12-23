@@ -39,6 +39,7 @@ services:
   frontend-dev:
     build: ./FrontEnd
     restart: always
+    container_name: frontend-dev
   
   nginx-dev:
     build: 
