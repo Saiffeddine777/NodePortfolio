@@ -39,8 +39,6 @@ services:
   frontend-dev:
     build: ./FrontEnd
     restart: always
-    ports:
-      - "5137:80"
   
   nginx-dev:
     build: 
