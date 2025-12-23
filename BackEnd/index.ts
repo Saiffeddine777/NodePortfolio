@@ -30,13 +30,12 @@ app.use("/api/users", UserRouter);
 app.use("/api/technologies", TechnologyRouter);
 app.use("/api/emails", EmailRouter);
 app.use("/api/projects", ProjectRouter);
-const param : string = isProduction?"0.0.0.0":"127.0.0.1"
 
 DataSource.initialize()
   .then(() => {
     console.log("Data source has been initialised");
 
-    app.listen(port ,param, () => console.log(`App running on ${port}`));
+    app.listen(port , () => console.log(`App running on ${port}`));
     createAnAdminifNotExist()
       .then(() => {})
       .catch((error) => console.log(error));
