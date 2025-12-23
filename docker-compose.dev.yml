@@ -19,7 +19,6 @@ services:
 
   backend-dev:
     build: ./BackEnd
-    container_name: backend-app-dev
     restart: always
     env_file: ./BackEnd/.env
     depends_on:
@@ -39,7 +38,6 @@ services:
 
   frontend-dev:
     build: ./FrontEnd
-    container_name: frontend-app-dev
     restart: always
   
   nginx-dev:

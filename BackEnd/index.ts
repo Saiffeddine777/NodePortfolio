@@ -11,6 +11,7 @@ import { DataSource } from "./EnvDataSource";
 import createAnAdminifNotExist from "./SpecialServices/CreateAnAdminIfNotExist";
 import { refreshTokenController } from "./RefreshToken";
 import { healthCheck } from "./Helpers/ExpressHealthCheck";
+import { isProduction } from "./Config/Environement";
 
 const port: number = parseInt(process.env.SERVER_PORT as string);
 const origin : string[] =[ process.env.FRONT_URL as string,"http://localhost:5173"]
@@ -29,12 +30,13 @@ app.use("/api/users", UserRouter);
 app.use("/api/technologies", TechnologyRouter);
 app.use("/api/emails", EmailRouter);
 app.use("/api/projects", ProjectRouter);
+const param : string = isProduction?"0.0.0.0":"127.0.0.1"
 
 DataSource.initialize()
   .then(() => {
     console.log("Data source has been initialised");
 
-    app.listen(port, () => console.log(`App running on ${port}`));
+    app.listen(port ,param, () => console.log(`App running on ${port}`));
     createAnAdminifNotExist()
       .then(() => {})
       .catch((error) => console.log(error));
