@@ -40,7 +40,7 @@ services:
     build: ./FrontEnd
     restart: always
     ports:
-      - "3000:80"
+      - "5137:80"
   
   nginx-dev:
     build: 
