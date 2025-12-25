@@ -53,6 +53,7 @@
               ADMIN_ACCOUNT=${{ secrets.ADMIN_ACCOUNT }}
               ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
               FRONT_URL=${{ secrets.FRONT_URL }}
+              FRONT_URL_NO_WWW=${{ secrets.FRONT_URL_NO_WWW }}
               EOF
 
 
