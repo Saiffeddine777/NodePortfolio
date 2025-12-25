@@ -11,10 +11,12 @@ import { DataSource } from "./EnvDataSource";
 import createAnAdminifNotExist from "./SpecialServices/CreateAnAdminIfNotExist";
 import { refreshTokenController } from "./RefreshToken";
 import { healthCheck } from "./Helpers/ExpressHealthCheck";
-import { isProduction } from "./Config/Environement";
 
 const port: number = parseInt(process.env.SERVER_PORT as string);
-const origin : string[] =[ process.env.FRONT_URL as string,"http://localhost:5173"]
+const origin : string[] =[ 
+   process.env.FRONT_URL as string,
+   process.env.FRONT_URL_NO_WWW as string
+  ,"http://localhost:5173"]
 
 const app: express.Express = express();
 app.use(cors({
