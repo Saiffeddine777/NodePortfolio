@@ -16,7 +16,7 @@ const port: number = parseInt(process.env.SERVER_PORT as string);
 const origin : string[] =[ 
    process.env.FRONT_URL as string,
    process.env.FRONT_URL_NO_WWW as string
-  ,"http://localhost:5173"]
+  ,"http://localhost:5173"].filter(Boolean);
 
 const app: express.Express = express();
 app.use(cors({
