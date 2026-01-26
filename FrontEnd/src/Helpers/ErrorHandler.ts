@@ -15,5 +15,6 @@ export const handleComponentError: (error: unknown) => void = (error) => {
     handleError("Error", (error as any).message);
     return;
   }
+  
   handleError("Unknown Error", String(error));
 };
