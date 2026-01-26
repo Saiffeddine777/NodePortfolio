@@ -6,6 +6,8 @@ import {
   FormHelperText,
   Typography,
   Button,
+  Paper,
+  Divider,
 } from "@mui/material";
 import React from "react";
 import type { User } from "../../../Types/User.ts";
@@ -20,8 +22,9 @@ import { api } from "../../../ApiService/ApiBrain.ts";
 type Props = {};
 
 const CreateUser = ({}: Props) => {
-  const [password, setPassword] = React.useState<string>("")
+  const [password, setPassword] = React.useState<string>("");
   const navigate = useNavigate();
+
   const signInRef = React.useRef<User>({
     firstName: "",
     lastName: "",
@@ -31,9 +34,10 @@ const CreateUser = ({}: Props) => {
     userName: "",
     file: null,
   });
-  const navigateToUsers = ()=>{
-    navigate("/dashboard/userlist")
-  }
+
+  const navigateToUsers = () => {
+    navigate("/dashboard/userlist");
+  };
 
   const handleChange: RefChangerFunction<User> = (event, key) => {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
@@ -68,11 +72,12 @@ const CreateUser = ({}: Props) => {
         firstName,
         file,
       }) as User;
+
       let formData: FormData = new FormData();
       Object.entries(nonEmptUserObject).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      console.log(formData.get("file"));
+
       const result: AxiosResponse<User> = await api.post(
         `/api/users/`,
         formData,
@@ -80,112 +85,125 @@ const CreateUser = ({}: Props) => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+
       if (result.data.id) {
-        handleSuccess("User Insertion", "User inserted Sucessfully");
-        setPassword (result.data.password as string)
+        handleSuccess("User Insertion", "User inserted successfully");
+        setPassword(result.data.password as string);
       }
     } catch (error) {
       handleComponentError(error);
     }
   };
+
   return (
     <>
-    <Button onClick={navigateToUsers}>
-      Back to Users
-    </Button>
-      <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifySelf: "center",
-        marginTop: "-2%",
-        alignItems: "center",
-      }}
-    >
-      {password!=="" && <Typography>Please copy this password <span style={{fontWeight: "bold"}}>{password}</span> It will be deleted when you leave Tab</Typography>}
-      <FormControl
-        sx={{
-          width: "200%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">Email address</InputLabel>
-        <Input onChange={(e) => handleChange(e, "email")} />
-        <FormHelperText id="my-helper-text">
-          We'll never share your email.
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "200%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">First Name</InputLabel>
-        <Input onChange={(e) => handleChange(e, "firstName")} />
-        <FormHelperText id="my-helper-text">EX : Saiffeddine</FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "200%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">Last name</InputLabel>
-        <Input onChange={(e) => handleChange(e, "lastName")} />
-        <FormHelperText id="my-helper-text">Ex : Zouaghi</FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "200%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">User Name</InputLabel>
-        <Input onChange={(e) => handleChange(e, "userName")} />
-        <FormHelperText id="my-helper-text">Ex: Saif123</FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "200%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">Phone number</InputLabel>
-        <Input onChange={(e) => handleChange(e, "phoneNumber")} />
-        <FormHelperText id="my-helper-text">+216 23******</FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "200%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">Occupation</InputLabel>
-        <Input onChange={(e) => handleChange(e, "occupation")} />
-        <FormHelperText id="my-helper-text">Human ressources</FormHelperText>
-      </FormControl>
-
-      <InputLabel htmlFor="my-input">Insert An Image</InputLabel>
-      <Input onChange={(e) => handleChange(e, "file")} type="file" />
       <Button
-        onClick={handleSignUp}
-        type="button"
-        variant="contained"
+        onClick={navigateToUsers}
+        sx={{ mb: 2, textTransform: "none" }}
+      >
+        ← Back to Users
+      </Button>
+
+      <Paper
+        elevation={2}
         sx={{
-          mt: 3,
-          px: 4,
-          py: 1.5,
-          borderRadius: 2,
-          textTransform: "none",
-          fontWeight: "bold",
-          fontSize: "1rem",
-          backgroundColor: "#1976d2",
-          "&:hover": {
-            backgroundColor: "#1565c0",
-          },
-          width: "50%",
+          maxWidth: 600,
+          mx: "auto",
+          p: 4,
+          borderRadius: 3,
         }}
       >
-        Submit
-      </Button>
-    </Box>
-    </>
+        <Typography variant="h6" fontWeight="bold" mb={1}>
+          Create User
+        </Typography>
 
+        <Typography variant="body2" color="text.secondary" mb={3}>
+          Fill in the information below to create a new user.
+        </Typography>
+
+        {password !== "" && (
+          <Box
+            sx={{
+              mb: 3,
+              p: 2,
+              borderRadius: 2,
+              bgcolor: "warning.light",
+            }}
+          >
+            <Typography fontWeight="bold">
+              Temporary password
+            </Typography>
+            <Typography>
+              <strong>{password}</strong> — copy it now. It will be
+              deleted when you leave this page.
+            </Typography>
+          </Box>
+        )}
+
+        <Box display="flex" flexDirection="column" gap={2}>
+          <FormControl fullWidth>
+            <InputLabel>Email address</InputLabel>
+            <Input onChange={(e) => handleChange(e, "email")} />
+            <FormHelperText>
+              We'll never share your email.
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>First Name</InputLabel>
+            <Input onChange={(e) => handleChange(e, "firstName")} />
+            <FormHelperText>Ex: Saiffeddine</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Last Name</InputLabel>
+            <Input onChange={(e) => handleChange(e, "lastName")} />
+            <FormHelperText>Ex: Zouaghi</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>User Name</InputLabel>
+            <Input onChange={(e) => handleChange(e, "userName")} />
+            <FormHelperText>Ex: Saif123</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Phone Number</InputLabel>
+            <Input onChange={(e) => handleChange(e, "phoneNumber")} />
+            <FormHelperText>+216 23******</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Occupation</InputLabel>
+            <Input onChange={(e) => handleChange(e, "occupation")} />
+            <FormHelperText>Human Resources</FormHelperText>
+          </FormControl>
+
+          <Divider sx={{ my: 2 }} />
+
+          <FormControl>
+            <InputLabel shrink>Profile Image</InputLabel>
+            <Input type="file" onChange={(e) => handleChange(e, "file")} />
+          </FormControl>
+
+          <Button
+            onClick={handleSignUp}
+            type="button"
+            variant="contained"
+            sx={{
+              mt: 3,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: "bold",
+              fontSize: "1rem",
+            }}
+          >
+            Create User
+          </Button>
+        </Box>
+      </Paper>
+    </>
   );
 };
 

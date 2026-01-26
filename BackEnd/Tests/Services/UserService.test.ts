@@ -30,13 +30,11 @@ jest.mock("bcrypt", () => ({
 }));
 
 jest.mock("jsonwebtoken", () => ({
-  verify: jest
-    .fn()
-    .mockReturnValue({
-      id: 1,
-      email: "luna.code@example.com",
-      role: UserRole.ADMIN,
-    }),
+  verify: jest.fn().mockReturnValue({
+    id: 1,
+    email: "luna.code@example.com",
+    role: UserRole.ADMIN,
+  }),
 }));
 
 jest.mock("../../Handlers/NodeMailerHandler", () => ({
@@ -165,14 +163,14 @@ describe("UserService testing", () => {
     jest.spyOn(UserRepository, "save").mockResolvedValue(mockUser as User);
     const result: Partial<User> | undefined = await createUser(
       mockUserInput,
-      mockFileToCloudinary
+      mockFileToCloudinary,
     );
     expect(passwordGenerator).toHaveBeenCalled();
     expect(bcrypt.hash).toHaveBeenCalledWith("password12", 10);
     expect(createUserEmailDataFactoryFunction).toHaveBeenCalledWith(
       mockUser.userName,
       "password12",
-      mockUser.email
+      mockUser.email,
     );
     expect(sendEmail).toHaveBeenCalledWith({
       subject: `Welcome to Saif's portfolio`,
@@ -243,7 +241,7 @@ describe("UserService testing", () => {
     const result = await modifyOneUser(
       1,
       mockUserInput2,
-      mockFileToCloudinary2
+      mockFileToCloudinary2,
     );
     expect(UserRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
     expect(deleteFromCloudinary).toHaveBeenCalledWith(mockUser.publicId);
@@ -265,17 +263,17 @@ describe("UserService testing", () => {
     });
     expect(bcrypt.compare).toHaveBeenCalledWith(
       "password12",
-      mockUser.password
+      mockUser.password,
     );
     expect(generateToken).toHaveBeenCalledWith(
       mockUser,
       "REFRESH_JWT_SECRET",
-      "7d"
+      "7d",
     );
     expect(generateToken).toHaveBeenCalledWith(
       mockUser,
       "ACCESS_JWT_SECRET",
-      "15m"
+      "15m",
     );
 
     const { password, ...minusPassword } = mockUser;
@@ -292,7 +290,7 @@ describe("UserService testing", () => {
     const result = await loginWithToken("sometokenString");
     expect(jwt.verify).toHaveBeenCalledWith(
       "sometokenString",
-      "ACCESS_JWT_SECRET"
+      "ACCESS_JWT_SECRET",
     );
     expect(UserRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
     const { password, ...minusPassword } = mockUser;
@@ -314,6 +312,20 @@ describe("UserService testing", () => {
       ...mockUserInput,
       password: "hashed_password_mock",
     });
-    expect(result).toBe("User has signed up Successfully");
+    expect(result).toEqual({
+      id: 1,
+      userName: "luna_code",
+      email: "luna.code@example.com",
+      phoneNumber: "+1987654321",
+      occupation: "Backend Engineer",
+      firstName: "Luna",
+      lastName: "Morales",
+      role: UserRole.ADMIN,
+      publicId: "user_avatar_123",
+      imageUrl:
+        "https://res.cloudinary.com/demo/image/upload/v1690000000/user_avatar.png",
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+    });
   });
 });

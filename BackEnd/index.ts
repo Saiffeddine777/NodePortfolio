@@ -11,6 +11,7 @@ import { DataSource } from "./EnvDataSource";
 import createAnAdminifNotExist from "./SpecialServices/CreateAnAdminIfNotExist";
 import { refreshTokenController } from "./RefreshToken";
 import { healthCheck } from "./Helpers/ExpressHealthCheck";
+import PortfolioFileRouter from "./Routers/PortfolioFileRouter";
 
 const port: number = parseInt(process.env.SERVER_PORT as string);
 const origin : string[] =[ 
@@ -24,14 +25,17 @@ app.use(cors({
   credentials : true, 
   exposedHeaders :["Authorization"]
 }));
+
 app.use(express.json());
 app.use(cookieParser());
+
 app.get("/health" , healthCheck);
 app.post("/refresh" , refreshTokenController);
 app.use("/api/users", UserRouter);
 app.use("/api/technologies", TechnologyRouter);
 app.use("/api/emails", EmailRouter);
 app.use("/api/projects", ProjectRouter);
+app.use("/api/files", PortfolioFileRouter);
 
 DataSource.initialize()
   .then(() => {

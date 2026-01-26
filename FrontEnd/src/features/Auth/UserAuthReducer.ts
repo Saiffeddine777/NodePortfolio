@@ -24,13 +24,20 @@ export const authApiThunk = createAsyncThunk<
   SignInData,
   { rejectValue: string }
 >("request/UserAuthentication", async (credentials, { rejectWithValue }) => {
+  const{email, password , token} = credentials;
   try {
     const response: AxiosResponse<User> = await api.post(
       `/api/users/login`,
-      credentials
+      {email , password},{
+        headers:{
+          recaptcha: token
+        }
+      }
     );
-
     localStorage.setItem("accessToken", response.data?.accessToken as string);
+    if (!("id" in response.data)){
+       throw new Error("Password or Email one them is wrong")
+    }
     return response.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data || "Login failed");

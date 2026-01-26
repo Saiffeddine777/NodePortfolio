@@ -5,6 +5,9 @@ import {
   InputLabel,
   FormHelperText,
   Button,
+  Paper,
+  Typography,
+  Divider,
 } from "@mui/material";
 import React from "react";
 import type { User } from "../../../Types/User.tsx";
@@ -22,6 +25,7 @@ const ModifyUser = ({}: Props) => {
   const location: Location<{ id?: number }> = useLocation();
   const id = location.state.id;
   const navigate = useNavigate();
+
   const signInRef = React.useRef<User>({
     firstName: "",
     lastName: "",
@@ -42,6 +46,7 @@ const ModifyUser = ({}: Props) => {
   });
 
   const [trigg, setTrigg] = React.useState<boolean>(false);
+
   const navigateToUsers = () => {
     navigate("/dashboard/userlist");
   };
@@ -88,17 +93,16 @@ const ModifyUser = ({}: Props) => {
           formData.append(key, String(value));
         }
       });
+
       await api.put(
         `/api/users/${id}`,
         nonEmptUserObject.file ? formData : nonEmptUserObject,
         formData.has("file")
-          ? {
-              headers: { "Content-Type": "multipart/form-data" },
-            }
+          ? { headers: { "Content-Type": "multipart/form-data" } }
           : undefined
       );
 
-      handleSuccess("User Insertion", "User inserted Sucessfully");
+      handleSuccess("User Update", "User updated successfully");
       setTrigg(!trigg);
     } catch (error) {
       handleComponentError(error);
@@ -107,9 +111,7 @@ const ModifyUser = ({}: Props) => {
 
   const fetchUserToModify: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<User> = await api.get(
-        `/api/users/${id}`
-      );
+      const result: AxiosResponse<User> = await api.get(`/api/users/${id}`);
       setUserToModify(result.data);
     } catch (error) {
       handleComponentError(error);
@@ -119,109 +121,109 @@ const ModifyUser = ({}: Props) => {
   React.useEffect(() => {
     fetchUserToModify();
   }, [trigg]);
+
   return (
     <>
-      <Button onClick={navigateToUsers}>Back to Users</Button>
-      <Box
+      <Button
+        onClick={navigateToUsers}
+        sx={{ mb: 2, textTransform: "none" }}
+      >
+        ← Back to Users
+      </Button>
+
+      <Paper
+        elevation={2}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifySelf: "center",
-          marginTop: "-2%",
-          alignItems: "center",
+          maxWidth: 600,
+          mx: "auto",
+          p: 4,
+          borderRadius: 3,
         }}
       >
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">Email address</InputLabel>
-          <Input onChange={(e) => handleChange(e, "email")} />
-          <FormHelperText id="my-helper-text">
-            {userToModify.email}
-          </FormHelperText>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">First Name</InputLabel>
-          <Input onChange={(e) => handleChange(e, "firstName")} />
-          <FormHelperText id="my-helper-text">
-            {userToModify.firstName}
-          </FormHelperText>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">Last name</InputLabel>
-          <Input onChange={(e) => handleChange(e, "lastName")} />
-          <FormHelperText id="my-helper-text">
-            {userToModify.lastName}
-          </FormHelperText>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">User Name</InputLabel>
-          <Input onChange={(e) => handleChange(e, "userName")} />
-          <FormHelperText id="my-helper-text">
-            {userToModify.userName}
-          </FormHelperText>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">Phone number</InputLabel>
-          <Input onChange={(e) => handleChange(e, "phoneNumber")} />
-          <FormHelperText id="my-helper-text">
-            {userToModify.phoneNumber}
-          </FormHelperText>
-        </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">Occupation</InputLabel>
-          <Input onChange={(e) => handleChange(e, "occupation")} />
-          <FormHelperText id="my-helper-text">
-            {userToModify.occupation}
-          </FormHelperText>
-        </FormControl>
+        <Typography variant="h6" fontWeight="bold" mb={1}>
+          Modify User
+        </Typography>
 
-        <InputLabel htmlFor="my-input">Insert An Image</InputLabel>
-        <Input onChange={(e) => handleChange(e, "file")} type="file" />
-        <Button
-          onClick={handleSubmitModification}
-          type="button"
-          variant="contained"
-          sx={{
-            mt: 3,
-            px: 4,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: "bold",
-            fontSize: "1rem",
-            backgroundColor: "#1976d2",
-            "&:hover": {
-              backgroundColor: "#1565c0",
-            },
-            width: "50%",
-          }}
-        >
-          Submit
-        </Button>
-      </Box>
+        <Typography variant="body2" color="text.secondary" mb={3}>
+          Leave fields empty to keep the current values.
+        </Typography>
+
+        <Box display="flex" flexDirection="column" gap={2}>
+          <FormControl fullWidth>
+            <InputLabel>Email address</InputLabel>
+            <Input onChange={(e) => handleChange(e, "email")} />
+            <FormHelperText>
+              Current: {userToModify.email}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>First Name</InputLabel>
+            <Input onChange={(e) => handleChange(e, "firstName")} />
+            <FormHelperText>
+              Current: {userToModify.firstName}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Last Name</InputLabel>
+            <Input onChange={(e) => handleChange(e, "lastName")} />
+            <FormHelperText>
+              Current: {userToModify.lastName}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>User Name</InputLabel>
+            <Input onChange={(e) => handleChange(e, "userName")} />
+            <FormHelperText>
+              Current: {userToModify.userName}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Phone Number</InputLabel>
+            <Input onChange={(e) => handleChange(e, "phoneNumber")} />
+            <FormHelperText>
+              Current: {userToModify.phoneNumber}
+            </FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Occupation</InputLabel>
+            <Input onChange={(e) => handleChange(e, "occupation")} />
+            <FormHelperText>
+              Current: {userToModify.occupation}
+            </FormHelperText>
+          </FormControl>
+
+          <Divider sx={{ my: 2 }} />
+
+          <FormControl>
+            <InputLabel shrink>Profile Image</InputLabel>
+            <Input type="file" onChange={(e) => handleChange(e, "file")} />
+            <FormHelperText>
+              Upload only if you want to replace the current image
+            </FormHelperText>
+          </FormControl>
+
+          <Button
+            onClick={handleSubmitModification}
+            type="button"
+            variant="contained"
+            sx={{
+              mt: 3,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: "bold",
+              fontSize: "1rem",
+            }}
+          >
+            Save Changes
+          </Button>
+        </Box>
+      </Paper>
     </>
   );
 };

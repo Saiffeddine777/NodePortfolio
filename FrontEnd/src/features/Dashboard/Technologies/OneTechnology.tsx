@@ -36,7 +36,6 @@ function OneTechnology({}: Props) {
     navigate(`/dashboard/${path}`, techId?{state : {id:techId}}:undefined)
   }
 
-  console.log(tech)
   return (    <Box
       display="flex"
       justifyContent="center"

@@ -8,6 +8,7 @@ import {
   Button,
   Select,
   MenuItem,
+  Paper,
 } from "@mui/material";
 import React from "react";
 import { TechType, type Technology } from "../../../Types/Technology.ts";
@@ -24,6 +25,7 @@ type Props = {};
 
 function CreateTechnology({}: Props) {
   const navigate = useNavigate();
+
   const createdTech = React.useRef<Technology>({
     name: "",
     technologyType: TechType.TOOLS,
@@ -60,89 +62,107 @@ function CreateTechnology({}: Props) {
       handleComponentError(error);
     }
   };
+
   return (
-    <>
-      <Button variant="contained" onClick={navigateBackToTechnologies}>
-        back to Technologies
-      </Button>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifySelf: "center",
-          marginTop: "-2%",
-          alignItems: "center",
-        }}
+    <Box>
+      {/* BACK BUTTON */}
+      <Button
+        variant="contained"
+        sx={{ mb: 3, textTransform: "none", fontWeight: "bold" }}
+        onClick={navigateBackToTechnologies}
       >
-        <Typography variant="h5">Create A technology Skill</Typography>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
+        Back to Technologies
+      </Button>
+
+      {/* FORM CARD */}
+      <Paper
+        sx={{
+          maxWidth: 600,
+          mx: "auto",
+          p: 4,
+          borderRadius: 3,
+        }}
+        elevation={3}
+      >
+        <Typography
+          variant="h5"
+          sx={{ mb: 3, fontWeight: "bold", textAlign: "center" }}
         >
-          <InputLabel htmlFor="my-input">What did I learn</InputLabel>
+          Create a Technology Skill
+        </Typography>
+
+        {/* NAME */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>What did I learn</InputLabel>
           <Input
             onChange={(e) =>
               handleInputChangeIntoARefObject(createdTech, e, "name")
             }
           />
-          <FormHelperText id="my-helper-text">EX: java</FormHelperText>
+          <FormHelperText>Ex: Java</FormHelperText>
         </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Select A type</InputLabel>
+
+        {/* TYPE */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Select a type</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={"Choose a Technologie"}
-            label="Age"
+            value={createdTech.current.technologyType}
             onChange={(e) =>
-              handleInputChangeIntoARefObject(createdTech, e, "technologyType")
+              handleInputChangeIntoARefObject(
+                createdTech,
+                e,
+                "technologyType"
+              )
             }
           >
-            {arrayOftechTypes.map((element, index) => {
-              return (
-                <MenuItem key={index} value={element}>
-                  {element}
-                </MenuItem>
-              );
-            })}
+            {arrayOftechTypes.map((element, index) => (
+              <MenuItem key={index} value={element}>
+                {element}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
-          <InputLabel htmlFor="my-input">
-            I will give My Self a Score
-          </InputLabel>
+
+        {/* SCORE */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>I will give myself a score</InputLabel>
           <Input
+            type="number"
             onChange={(e) =>
               handleInputChangeIntoARefObject(createdTech, e, "score")
             }
           />
-          <FormHelperText id="my-helper-text">0 TO 1</FormHelperText>
+          <FormHelperText>0 to 10</FormHelperText>
         </FormControl>
-        <FormControl
-          sx={{
-            width: "200%",
-          }}
-        >
+
+        {/* FILE */}
+        <FormControl fullWidth sx={{ mb: 4 }}>
           <Input
+            type="file"
             onChange={(e) =>
               handleInputChangeIntoARefObject(createdTech, e, "file")
             }
-            type="file"
           />
-          <FormHelperText id="my-helper-text">
-            Insert a referencing photo
+          <FormHelperText>
+            Insert a referencing photo (optional)
           </FormHelperText>
         </FormControl>
-        <Button variant="outlined" onClick={handleSubmit}>
+
+        {/* SUBMIT */}
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{
+            py: 1.4,
+            fontWeight: "bold",
+            textTransform: "none",
+          }}
+          onClick={handleSubmit}
+        >
           Submit Technology
         </Button>
-      </Box>
-    </>
+      </Paper>
+    </Box>
   );
 }
 

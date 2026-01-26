@@ -1,74 +1,83 @@
-import { Box, List, ListItem, ListItemText , ListItemIcon } from "@mui/material";
-import { useNavigate } from "react-router";
-import type { ArrayOfMenuItems } from "../../Types/Utilities.ts";
-import { AccountTree, Biotech, Email, Home, SupervisedUserCircle } from "@mui/icons-material";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Typography,
+} from "@mui/material";
+import { useNavigate, useLocation } from "react-router";
+import {
+  AccountTree,
+  Biotech,
+  Email,
+  Home,
+  SupervisedUserCircle,
+  FileUpload,
+} from "@mui/icons-material";
 
-type Props = {};
-
-const Menu = ({}: Props) => {
-  const listOfitems: ArrayOfMenuItems[] = [
-    {name :"Home" , icon : Home},
-    {name :"Emails" , icon :Email}, 
-    {name :"Users" , icon : SupervisedUserCircle }, 
-    {name :"Technologies" , icon :  Biotech} , 
-    {name :"Projects" , icon : AccountTree}
-  ];
+const Menu = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const navigateToComp = (element: string) => {
-    switch (element) {
-      case "Home":
-        navigate("/")
-        break;
-      case "Users":
-        navigate("/dashboard/userlist");
-        break;
-      case "Technologies":
-        navigate("/dashboard/technologies");
-        break;
-      case "Emails":
-        navigate("/dashboard/emaillist");
-        break;
-      case "Projects":
-        navigate("/dashboard/projectlist")
-         break ;
-      default:
-        break;
-    }
-  };
+  const listOfItems = [
+    { name: "Home", icon: Home, path: "/" },
+    { name: "Emails", icon: Email, path: "/dashboard/emaillist" },
+    { name: "Users", icon: SupervisedUserCircle, path: "/dashboard/userlist" },
+    { name: "Technologies", icon: Biotech, path: "/dashboard/technologies" },
+    { name: "Projects", icon: AccountTree, path: "/dashboard/projectlist" },
+    { name: "Files", icon: FileUpload, path: "/dashboard/portfoliofilelist" },
+  ];
+
   return (
-<Box
+    <Box
       sx={{
-        flex: "0 0 20%",
-        border: "1px solid violet",
-        borderRadius: "10%",
-        height: "100%",
-        boxSizing: "border-box",
+        width: 260,
+        height: "100vh",
+        bgcolor: "background.paper",
+        borderRight: "1px solid",
+        borderColor: "divider",
+        p: 2,
       }}
     >
+      <Typography variant="h6" fontWeight="bold" mb={3}>
+        Dashboard
+      </Typography>
+
       <List>
-        {listOfitems.map((item, key) => {
-          const IconComponent = item.icon;
+        {listOfItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+
           return (
             <ListItem
-              key={key}
-              onClick={() => navigateToComp(item.name)}
+              key={item.name}
+              onClick={() => navigate(item.path)}
               sx={{
-                cursor : "pointer",
-                "&:hover": {
-                  backgroundColor: "rgba(138,43,226,0.1)", // violet glow
-                },
+                cursor: "pointer",
                 borderRadius: 2,
-                my: 0.5,
+                mb: 1,
+                bgcolor: isActive ? "primary.main" : "transparent",
+                color: isActive ? "primary.contrastText" : "text.primary",
+                "&:hover": {
+                  bgcolor: isActive
+                    ? "primary.dark"
+                    : "action.hover",
+                },
               }}
             >
-              <ListItemIcon>
-                <IconComponent color="primary" />
+              <ListItemIcon
+                sx={{
+                  color: isActive
+                    ? "primary.contrastText"
+                    : "primary.main",
+                  minWidth: 40,
+                }}
+              >
+                <Icon />
               </ListItemIcon>
-              <ListItemText
-                primary={item.name}
-                sx={{ cursor: "pointer" }}
-              />
+
+              <ListItemText primary={item.name} />
             </ListItem>
           );
         })}
@@ -77,4 +86,4 @@ const Menu = ({}: Props) => {
   );
 };
 
-export default Menu; 
+export default Menu;

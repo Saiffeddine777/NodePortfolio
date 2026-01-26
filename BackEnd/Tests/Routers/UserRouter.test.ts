@@ -6,6 +6,12 @@ jest.mock("../../Handlers/UploadImageHandler", () => {
   return (req: any, res: any, next: any) => next();
 });
 
+jest.mock("../../Middlewares/RecaptchaVerification", ()=>({
+  __esModule : true,
+  verifyRecaptcha : jest.fn((req: any, res: any, next: any) => next()),
+}))
+
+
 jest.mock("../../Controllers/UserController", () => ({
   deleteOneUser: jest.fn(),
   getAllUsers: jest.fn(),
@@ -23,6 +29,7 @@ import * as UserController from "../../Controllers/UserController";
 import request from "supertest";
 import testApp  from "../test-server";
 import { User, UserRole } from "../../Entities/User";
+import { verifyRecaptcha } from "../../Middlewares/RecaptchaVerification";
 
 
 
@@ -90,6 +97,9 @@ describe("UserRouter Tests", () => {
   });
 
   it("POST /api/users/register should register one user when given data", async () => {
+    (verifyRecaptcha as jest.Mock).mockImplementation((req: any, res: any, next: any) =>
+      next()
+    );
     jest
       .spyOn(UserController, "register")
       .mockImplementation(async (req, res) => {
@@ -108,6 +118,9 @@ describe("UserRouter Tests", () => {
   });
 
   it("POST /api/users/login should login user when given emaila and password", async () => {
+    (verifyRecaptcha as jest.Mock).mockImplementation((req: any, res: any, next: any) =>
+      next()
+    );
     jest.spyOn(UserController, "logIn").mockImplementation(async (req, res) => {
       res.status(200).json({user :mockUser , accessToken :"token_string"});
     });

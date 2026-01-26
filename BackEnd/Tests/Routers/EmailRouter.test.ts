@@ -1,11 +1,12 @@
-
-
-
 jest.mock("../../Middlewares/VerifyAdmin", () => ({
   __esModule: true,
   isAdmin: jest.fn((req: any, res: any, next: any) => next()),
 }));
 
+jest.mock("../../Middlewares/RecaptchaVerification", ()=>({
+  __esModule : true,
+  verifyRecaptcha : jest.fn((req: any, res: any, next: any) => next()),
+}))
 
 jest.mock("../../Controllers/EmailController", () => ({
   getAllEmails: jest.fn(),
@@ -23,6 +24,7 @@ import { UserRole } from "../../Entities/User";
 import { isAdmin } from "../../Middlewares/VerifyAdmin";
 import { DeleteResult } from "typeorm";
 import { UpdateResult } from "typeorm/browser";
+import { verifyRecaptcha } from "../../Middlewares/RecaptchaVerification";
 
 
 
@@ -152,6 +154,9 @@ describe("EmailRouter tests", () => {
 
 
   it ("POST /api/emails/ should create one email when given a body input" , async ()=>{
+    (verifyRecaptcha as jest.Mock).mockImplementation((req: any, res: any, next: any) =>
+      next()
+    );
     jest.spyOn(EmailController , "postAnEMail").mockImplementation(async (req, res)=>{
       res.status(200).json(mockResult)
     });

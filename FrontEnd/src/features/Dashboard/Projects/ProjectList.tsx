@@ -12,6 +12,7 @@ import {
   Box,
   Button,
   IconButton,
+  Paper,
 } from "@mui/material";
 import DeleteProject from "./DeleteProject.tsx";
 import { useNavigate, type NavigateFunction } from "react-router";
@@ -19,6 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
+
 function ProjectList({}: Props) {
   const navigate: NavigateFunction = useNavigate();
 
@@ -26,7 +28,7 @@ function ProjectList({}: Props) {
   const [trigg, setTrigg] = React.useState<boolean>(false);
 
   const arrayOfColumns: string[] = [
-    "id",
+    "Id",
     "Project Name",
     "Category",
     "Actions",
@@ -42,76 +44,132 @@ function ProjectList({}: Props) {
       handleComponentError(error);
     }
   };
-  const navigateToOneProject: (id?: number) => void = (id) => {
+
+  const navigateToOneProject = (id?: number): void => {
     navigate("/dashboard/oneproject", {
-      state: {
-        id: id,
-      },
+      state: { id },
     });
   };
 
-  const navigateToCreateAProject: () => void = () => {
+  const navigateToCreateAProject = (): void => {
     navigate("/dashboard/createproject");
   };
 
-  const navigateSomeWhere: (unSlachedPath: string, id?: number) => void = (unSlachedPath, id) => {
-    navigate(`/dashboard/${unSlachedPath}`, id ? { state: { id: id } } : undefined);
+  const navigateSomeWhere = (
+    unSlachedPath: string,
+    id?: number
+  ): void => {
+    navigate(
+      `/dashboard/${unSlachedPath}`,
+      id ? { state: { id } } : undefined
+    );
   };
 
   React.useEffect(() => {
     handleFetchProjects();
   }, [trigg]);
 
-  console.log(projects);
   return (
     <Box>
+      {/* ACTION BUTTON */}
       <Button
         sx={{
           mb: "2rem",
+          px: 3,
+          py: 1,
+          fontWeight: "bold",
+          textTransform: "none",
         }}
         onClick={navigateToCreateAProject}
         variant="contained"
       >
         Create a Project
       </Button>
-      <TableContainer>
+
+      {/* TABLE */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: 2,
+          overflow: "hidden",
+        }}
+      >
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow
+              sx={{
+                backgroundColor: "grey.100",
+              }}
+            >
               {arrayOfColumns.map((element, index) => {
-                return <TableCell key={index}>{element}</TableCell>;
+                return (
+                  <TableCell
+                    key={index}
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    {element}
+                  </TableCell>
+                );
               })}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {projects.map((project, index) => {
               return (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "grey.50",
+                    },
+                  }}
+                >
                   <TableCell>{project.id}</TableCell>
+
                   <TableCell
                     sx={{
                       cursor: "pointer",
+                      fontWeight: 500,
+                      "&:hover": {
+                        textDecoration: "underline",
+                        color: "primary.main",
+                      },
                     }}
-                    onClick={() => navigateToOneProject(project.id)}
+                    onClick={() =>
+                      navigateToOneProject(project.id)
+                    }
                   >
                     {project.projectName}
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      cursor: "default",
-                    }}
-                  >
-                    {project.category}
-                  </TableCell>
+
+                  <TableCell>{project.category}</TableCell>
+
                   <TableCell>
-                    <IconButton
-                     onClick={
-                      ()=>navigateSomeWhere("updateproject" , project.id)
-                     }
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
                     >
-                      <EditIcon/>
-                    </IconButton>
-                    <DeleteProject id={project.id} setTrigg={setTrigg} />
+                      <IconButton
+                        title="Modify"
+                        onClick={() =>
+                          navigateSomeWhere(
+                            "updateproject",
+                            project.id
+                          )
+                        }
+                      >
+                        <EditIcon />
+                      </IconButton>
+
+                      <DeleteProject
+                        id={project.id}
+                        setTrigg={setTrigg}
+                      />
+                    </Box>
                   </TableCell>
                 </TableRow>
               );

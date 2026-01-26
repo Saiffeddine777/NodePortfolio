@@ -8,6 +8,7 @@ jest.mock("../../Middlewares/VerifyAdmin", () => ({
 jest.mock ("../../Handlers/UploadImageHandler" ,()=>{
   return (req:any , res:any ,next:any)=>next()
 });
+
 jest.mock("../../Controllers/ProjectController", () => ({
   deleteOneProject: jest.fn(),
   getAllProjects: jest.fn(),
@@ -85,7 +86,7 @@ describe("Projects Tests", () => {
       createdAt: new Date(res.body.createdAt),
       updatedAt: new Date(res.body.updatedAt),
     };
-    expect(normalizeBody).toEqual(mockProject  )
+    expect(normalizeBody).toEqual(mockProject);
   });
 
     it("PUT /api/projects/1 should update a the project when given ID and data" ,async  ()=>{

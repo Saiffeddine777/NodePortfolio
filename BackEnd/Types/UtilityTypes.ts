@@ -9,3 +9,9 @@ export interface EmailInterface {
 export type SendEmailFunction = (email :EmailInterface) =>Promise<string>
 
 export type NullableOrUndefined <T> = T |null |undefined
+
+export interface PostGresError {
+  code: string;
+  detail?: string;
+  constraint?: string; 
+}

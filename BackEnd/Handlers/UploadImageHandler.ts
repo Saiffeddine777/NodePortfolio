@@ -3,7 +3,7 @@ import { multerStorage } from "../Config/Multer"
 
 
 const uploadImageFileFilter :multer.Options["fileFilter"] = (req,file , cb:any) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg" , "application/pdf"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {

@@ -10,6 +10,8 @@ import {
   TextField,
   Select,
   MenuItem,
+  Paper,
+  Typography,
 } from "@mui/material";
 import {
   generateData,
@@ -35,12 +37,13 @@ function CreateProject({}: Props) {
   });
 
   const handlePostProject: () => Promise<void> = async () => {
-
     try {
       const nonEmpty = generateData(projectRef.current);
       await api.post(
         `/api/projects`,
-        nonEmpty.file? generateFromDataFromRefObject({ current: nonEmpty }) : nonEmpty
+        nonEmpty.file
+          ? generateFromDataFromRefObject({ current: nonEmpty })
+          : nonEmpty
       );
       handleSuccess(
         "Project Inserted",
@@ -55,134 +58,136 @@ function CreateProject({}: Props) {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void = (e) => {
     const value: string = e.target.value;
-    projectRef.current.techStack = value.split(",").map(e=>{
-      return e.trim()
-    });
+    projectRef.current.techStack = value.split(",").map((e) => e.trim());
   };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifySelf: "center",
-      }}
-    >
-      <FormControl
+    <Box>
+      <Paper
+        elevation={3}
         sx={{
-          width: "150%",
+          maxWidth: 700,
+          mx: "auto",
+          p: 4,
+          borderRadius: 3,
         }}
       >
-        <InputLabel htmlFor="my-input">Name of the project</InputLabel>
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(projectRef, e, "projectName")
-          }
-        />
-        <FormHelperText id="my-helper-text">developer portfolio</FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "150%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">What is the Repo link</InputLabel>
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(projectRef, e, "githubUrl")
-          }
-        />
-        <FormHelperText id="my-helper-text">
-          https://github.com/profile/projectrepo
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "150%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">Live link</InputLabel>
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(projectRef, e, "liveUrl")
-          }
-        />
-        <FormHelperText id="my-helper-text">https://example.com</FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "150%",
-          height: "4rem",
-        }}
-      >
-        <TextField
-          label={"Describe the project to us"}
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(projectRef, e, "description")
-          }
-          sx={{
-            height: "4rem",
-          }}
-        />
-        <FormHelperText id="my-helper-text">
-          The story of the project
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-        sx={{
-          width: "150%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">
-          What did use to create this project
-        </InputLabel>
-        <Input onChange={(e) => handleTechStackChange(e)} />
-        <FormHelperText id="my-helper-text">
-          Spring boot , java , Angular...{" "}
-        </FormHelperText>
-      </FormControl>
-
-      <FormControl
-        sx={{
-          width: "150%",
-        }}
-      >
-        <InputLabel htmlFor="my-input">
-          Select the type of this project{" "}
-        </InputLabel>
-        <Select
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(projectRef, e, "category")
-          }
+        <Typography
+          variant="h5"
+          sx={{ mb: 3, fontWeight: "bold", textAlign: "center" }}
         >
-          <MenuItem value={ProjectCategory.WEB}>{ProjectCategory.WEB}</MenuItem>
-          <MenuItem value={ProjectCategory.API}>{ProjectCategory.API}</MenuItem>
-          <MenuItem value={ProjectCategory.MOBILE}>
-            {ProjectCategory.MOBILE}
-          </MenuItem>
-          <MenuItem value={ProjectCategory.OTHER}>
-            {ProjectCategory.OTHER}
-          </MenuItem>
-        </Select>
-        <FormHelperText id="my-helper-text">
-          What was the project in nature?{" "}
-        </FormHelperText>
-      </FormControl>
+          Create a Project
+        </Typography>
 
-      <FormControl
-        sx={{
-          width: "150%",
-        }}
-      >
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(projectRef, e, "file")
-          }
-          type="file"
-        />
-        <FormHelperText id="my-helper-text">Select an Image</FormHelperText>
-      </FormControl>
-      <Button onClick={handlePostProject}>Submit the Project</Button>
+        {/* PROJECT NAME */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Name of the project</InputLabel>
+          <Input
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(projectRef, e, "projectName")
+            }
+          />
+          <FormHelperText>Example: Developer Portfolio</FormHelperText>
+        </FormControl>
+
+        {/* GITHUB */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Repository link</InputLabel>
+          <Input
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(projectRef, e, "githubUrl")
+            }
+          />
+          <FormHelperText>
+            https://github.com/username/project
+          </FormHelperText>
+        </FormControl>
+
+        {/* LIVE URL */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Live link</InputLabel>
+          <Input
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(projectRef, e, "liveUrl")
+            }
+          />
+          <FormHelperText>https://example.com</FormHelperText>
+        </FormControl>
+
+        {/* DESCRIPTION */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <TextField
+            multiline
+            minRows={3}
+            label="Describe the project"
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(projectRef, e, "description")
+            }
+          />
+          <FormHelperText>The story behind the project</FormHelperText>
+        </FormControl>
+
+        {/* TECH STACK */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Tech stack</InputLabel>
+          <Input onChange={handleTechStackChange} />
+          <FormHelperText>
+            Spring Boot, Java, Angular, PostgreSQL
+          </FormHelperText>
+        </FormControl>
+
+        {/* CATEGORY */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Project category</InputLabel>
+          <Select
+            value={projectRef.current.category}
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(projectRef, e, "category")
+            }
+          >
+            <MenuItem value={ProjectCategory.WEB}>
+              {ProjectCategory.WEB}
+            </MenuItem>
+            <MenuItem value={ProjectCategory.API}>
+              {ProjectCategory.API}
+            </MenuItem>
+            <MenuItem value={ProjectCategory.MOBILE}>
+              {ProjectCategory.MOBILE}
+            </MenuItem>
+            <MenuItem value={ProjectCategory.OTHER}>
+              {ProjectCategory.OTHER}
+            </MenuItem>
+          </Select>
+          <FormHelperText>
+            What kind of project was this?
+          </FormHelperText>
+        </FormControl>
+
+        {/* IMAGE */}
+        <FormControl fullWidth sx={{ mb: 4 }}>
+          <Input
+            type="file"
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(projectRef, e, "file")
+            }
+          />
+          <FormHelperText>Project preview image</FormHelperText>
+        </FormControl>
+
+        {/* SUBMIT */}
+        <Button
+          fullWidth
+          variant="contained"
+          sx={{
+            py: 1.4,
+            fontWeight: "bold",
+            textTransform: "none",
+          }}
+          onClick={handlePostProject}
+        >
+          Submit Project
+        </Button>
+      </Paper>
     </Box>
   );
 }

@@ -1,10 +1,12 @@
 import { Router } from "express";
 import * as EmailController from "../Controllers/EmailController";
 import { isAdmin } from "../Middlewares/VerifyAdmin";
+import { verifyRecaptcha } from "../Middlewares/RecaptchaVerification";
+import { publicLimiter } from "../Middlewares/PublicLimiter";
 
 const EmailRouter = Router()
 
-EmailRouter.post("/" , EmailController.postAnEMail)
+EmailRouter.post("/"  ,publicLimiter, verifyRecaptcha , EmailController.postAnEMail)
 EmailRouter.get("/", isAdmin, EmailController.getAllEmails)
 EmailRouter.get("/:id" , EmailController.getOneEmail)
 EmailRouter.delete("/:id", isAdmin , EmailController.deleteOneEmail)

@@ -21,6 +21,7 @@ import { apiUrl } from "../../Urls.ts";
 import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
 import ProjectsSection from "./ProjectsSection.tsx";
 import { api } from "../../ApiService/ApiBrain.ts";
+import TitleOfTechnologies from "./TitleOfTechnologies.tsx";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -98,7 +99,6 @@ const Main = () => {
     fetchAllTechnologies();
     fetchProjects()
   }, []);
-  console.log
   return (
     <Container maxWidth="md" sx={{ py: 8 }}>
         <Box
@@ -125,7 +125,7 @@ const Main = () => {
       </Typography>
       </Box>
       <ProjectsSection projects={projects}/>
-
+        <TitleOfTechnologies/>
       {technologies.map((techObject, index) => (
         <Box
           key={index}

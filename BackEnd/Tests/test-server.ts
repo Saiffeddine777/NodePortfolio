@@ -7,6 +7,7 @@ import * as UserRouter from "../Routers/UserRouter";
 import * as TechnologyRouter from "../Routers/TechnologyRouter";
 import * as EmailRouter from "../Routers/EmailRouter";
 import * as ProjectRouter from "../Routers/ProjectRouter";
+import * as PortfolioFileRouter from "../Routers/PortfolioFileRouter"
 
 import { refreshTokenController } from "../RefreshToken";
 
@@ -28,6 +29,7 @@ testApp.use("/api/users", UserRouter.default);
 testApp.use("/api/technologies", TechnologyRouter.default);
 testApp.use("/api/emails", EmailRouter.default);
 testApp.use("/api/projects", ProjectRouter.default);
+testApp.use("/api/files" , PortfolioFileRouter.default);
 
 export default testApp
 

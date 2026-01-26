@@ -52,7 +52,6 @@ export function handleInputChangeIntoARefObject<
 }
 
 export const generateFromDataFromRefObject : FormDataGeneratorFunction =(refObject)=>{
-    console.log (refObject)
     const formData = new FormData()
     Object.entries(refObject.current).forEach(([key, value])=>{
       formData.append(key, value)

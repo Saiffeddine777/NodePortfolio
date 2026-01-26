@@ -16,7 +16,7 @@ const DeleteUser = ({ id, setTrigg , componentName }: Props) => {
   const navigate = useNavigate()
   const handleDeleteUser: () => Promise<void> = async () => {
     try {
-      const result = await api.delete(`$/api/users/${id}`);
+      const result = await api.delete(`/api/users/${id}`);
       if (result.data && !componentName) {
         setTrigg && setTrigg((state) => {
             return !state

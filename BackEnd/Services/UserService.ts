@@ -50,15 +50,16 @@ export const createUser: (
   }
 };
 
-export const signUpUser: (user: Partial<User>) => Promise<string> = async (
+export const signUpUser: (user: Partial<User>) => Promise<Partial<User>> = async (
   user
 ) => {
   try {
     const hashedPassoword = await bcrypt.hash(user.password as string, parseInt(process.env.BCRYPT_SALT as string ));
     const userToCreate =  { ...user, password :hashedPassoword }
     const userCreated: User = UserRepository.create(userToCreate);
-    await UserRepository.save(userCreated);
-    return "User has signed up Successfully";
+    const  result = await UserRepository.save(userCreated);
+    const { password , ...withOutPassword} = result; 
+    return withOutPassword;
   } catch (error) {
     errorhandler(error);
     throw error;

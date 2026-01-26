@@ -8,3 +8,5 @@ export interface MulterRequest<
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   file?: Express.Multer.File; // now TS knows req.file exists
 }
+
+

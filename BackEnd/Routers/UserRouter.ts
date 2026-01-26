@@ -2,11 +2,13 @@ import { Router } from "express";
 import * as UserController from "../Controllers/UserController";
 import uploadImage from "../Handlers/UploadImageHandler";
 import { isAdmin } from "../Middlewares/VerifyAdmin";
+import { verifyRecaptcha } from "../Middlewares/RecaptchaVerification";
+import { publicLimiter } from "../Middlewares/PublicLimiter";
 
 const UserRouter = Router();
 
-UserRouter.post("/register", UserController.register);
-UserRouter.post("/login", UserController.logIn);
+UserRouter.post("/register" , publicLimiter, verifyRecaptcha, UserController.register);
+UserRouter.post("/login", publicLimiter, verifyRecaptcha, UserController.logIn);
 UserRouter.get("/token", UserController.logInWithTokenController);
 UserRouter.post("/", isAdmin, uploadImage, UserController.postUser);
 UserRouter.get("/:id", UserController.getOneUser);

@@ -4,10 +4,11 @@ import { User } from "../Entities/User"
 import { Technology } from "../Entities/Technology"
 import { Email } from "../Entities/Email"
 import Project from "../Entities/Project"
+import { PortfolioFile } from "../Entities/PortfolioFile"
 
 
 const communOptions ={
-    entities :[User , Technology, Email , Project],
+    entities :[User , Technology, Email , Project , PortfolioFile],
     migrations :[],
     subscribers :[]
 }

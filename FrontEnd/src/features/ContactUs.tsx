@@ -7,17 +7,24 @@ import {
   FormHelperText,
   TextField,
   Button,
+  Paper,
+  Container,
 } from "@mui/material";
 import React from "react";
 import type { EmailInterface } from "../Types/EmailType.ts";
 import { handleInputChangeIntoARefObject } from "../Helpers/FieldVerifier.ts";
 import { handleComponentError } from "../Helpers/ErrorHandler.ts";
-import axios from "axios";
 import { handleSuccess } from "../Helpers/Sweetalert.ts";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { api } from "../ApiService/ApiBrain.ts";
+import BackToHome from "./HomeComponents/BackToHome.tsx";
 
 type Props = {};
 const apiUrl: string = import.meta.env.VITE_API_URL;
+
 const ContactUs = ({}: Props) => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const emailCreated = React.useRef<EmailInterface>({
     fromEmail: "",
     fromName: "",
@@ -25,70 +32,105 @@ const ContactUs = ({}: Props) => {
     body: "",
   });
 
-  const handleSubmitTheMessage: () => Promise<void> = async () => {
+  const handleSubmitTheMessage = async (): Promise<void> => {
     try {
-      await axios.post(`${apiUrl}/api/emails`, emailCreated.current);
+      if (!executeRecaptcha) {
+        throw new Error("Recaptcha is not Ready");
+      }
+      const token = await executeRecaptcha("contact_form");
+      await api.post(`${apiUrl}/api/emails`, emailCreated.current, {
+        headers: {
+          recaptcha: token,
+        },
+      });
       handleSuccess(
         "Message sent",
-        "You message has been sent we will contact you soon via email"
+        "Your message has been sent. We will contact you soon via email."
       );
     } catch (error) {
       handleComponentError(error);
     }
   };
+
   return (
-    <Box
-      sx={{
-        justifyItems: "center",
-        gap: "20px",
-        display: "flex",
-        flexDirection: "column",
-        width: "50%",
-        marginLeft: "10%",
-        paddingTop: "5%",
-      }}
-    >
-      <Typography>Send us a message</Typography>
-      <FormControl>
-        <InputLabel htmlFor="my-input">Email address</InputLabel>
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(emailCreated, e, "fromEmail")
-          }
-        />
-        <FormHelperText id="my-helper-text">
-          We'll never share your email.
-        </FormHelperText>
-      </FormControl>
-      <FormControl>
-        <InputLabel htmlFor="my-input">Name</InputLabel>
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(emailCreated, e, "fromName")
-          }
-        />
-        <FormHelperText id="my-helper-text">Exmaple: John</FormHelperText>
-      </FormControl>
-      <FormControl>
-        <InputLabel htmlFor="my-input">Subject</InputLabel>
-        <Input
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(emailCreated, e, "subject")
-          }
-        />
-        <FormHelperText id="my-helper-text">Example : Question</FormHelperText>
-      </FormControl>
-      <Typography>Give us details</Typography>
-      <FormControl>
-        <TextField
-          onChange={(e) =>
-            handleInputChangeIntoARefObject(emailCreated, e, "body")
-          }
-          rows={4}
-        />
-      </FormControl>
-      <Button onClick={handleSubmitTheMessage}>Submit Messaage</Button>
+    <Box>
+      <BackToHome/>
+        <Container maxWidth="sm">
+      <Paper
+        elevation={4}
+        sx={{
+          mt: 8,
+          p: 4,
+          borderRadius: 3,
+        }}
+      >
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          Contact Us
+        </Typography>
+
+        <Typography variant="body2" color="text.secondary" mb={3}>
+          Send us a message and we’ll get back to you as soon as possible.
+        </Typography>
+
+        <Box display="flex" flexDirection="column" gap={3}>
+          <FormControl fullWidth>
+            <InputLabel>Email address</InputLabel>
+            <Input
+              onChange={(e) =>
+                handleInputChangeIntoARefObject(emailCreated, e, "fromEmail")
+              }
+            />
+            <FormHelperText>We'll never share your email.</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Name</InputLabel>
+            <Input
+              onChange={(e) =>
+                handleInputChangeIntoARefObject(emailCreated, e, "fromName")
+              }
+            />
+            <FormHelperText>Example: John</FormHelperText>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Subject</InputLabel>
+            <Input
+              onChange={(e) =>
+                handleInputChangeIntoARefObject(emailCreated, e, "subject")
+              }
+            />
+            <FormHelperText>Example: Question</FormHelperText>
+          </FormControl>
+
+          <TextField
+            label="Message"
+            multiline
+            rows={4}
+            fullWidth
+            onChange={(e) =>
+              handleInputChangeIntoARefObject(emailCreated, e, "body")
+            }
+          />
+
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              mt: 2,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+            onClick={handleSubmitTheMessage}
+          >
+            Send Message
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
     </Box>
+
   );
 };
 

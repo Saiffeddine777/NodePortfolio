@@ -1,88 +1,122 @@
-import { Box , Input ,FormControl , InputLabel , FormHelperText, Button } from "@mui/material"
-import React from "react"
-import type { RefChangerFunction } from "../../Types/Utilities.ts"
-import { useAppDispatch, useAppSelector } from "../../app/Hooks.ts"
-import { authApiThunk } from "./UserAuthReducer.ts"
+import {
+  Box,
+  Input,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import type { RefChangerFunction } from "../../Types/Utilities.ts";
+import { useAppDispatch } from "../../app/Hooks.ts";
+import { authApiThunk } from "./UserAuthReducer.ts";
+import { type SignInData } from "../../Types/User.ts";
+import { handleSuccess } from "../../Helpers/Sweetalert.ts";
+import { useNavigate, type NavigateFunction } from "react-router";
+import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import BackToHome from "../HomeComponents/BackToHome.tsx";
 
-import { type SignInData } from "../../Types/User.ts"
-import { handleSuccess } from "../../Helpers/Sweetalert.ts"
-import { useNavigate, type NavigateFunction } from "react-router"
-import { handleComponentError } from "../../Helpers/ErrorHandler.ts"
-type Props = {}
-
+type Props = {};
 
 const LogInUser = ({}: Props) => {
-  const dispatch = useAppDispatch()
-  const signInCredentials = React.useRef<SignInData>({email :"" , password :""})
-  const user = useAppSelector(state =>state.userAuth)
-  const navigate :NavigateFunction = useNavigate()
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const dispatch = useAppDispatch();
+  const signInCredentials = React.useRef<SignInData>({
+    email: "",
+    password: "",
+  });
+  const navigate: NavigateFunction = useNavigate();
 
-  const handleChange : RefChangerFunction<SignInData> = (event ,key)=>{
-    signInCredentials.current[key] = event.target.value as never
-  }
-  const handleSignIn : ()=>Promise <void> =async ()=>{
-     dispatch(authApiThunk(signInCredentials.current))
-      if (user.error){
-        handleComponentError(user.error)
-        return
-      }
-     handleSuccess("Welcome" , "Successfully Signed In !")
-     navigate("/")
-  }
+  const handleChange: RefChangerFunction<SignInData> = (event, key) => {
+    signInCredentials.current[key] = event.target.value as never;
+  };
+
+  const handleSignIn = async () => {
+    if (!executeRecaptcha) {
+      throw new Error("Recaptcha is not Ready");
+    }
+    try {
+      const token = await executeRecaptcha("contact_form");
+      await dispatch(
+        authApiThunk({ token, ...signInCredentials.current }),
+      ).unwrap();
+      handleSuccess("Welcome", "Successfully Signed In!");
+      navigate("/");
+    } catch (error) {
+      handleComponentError(error);
+    }
+  };
+
   return (
-        <Box sx={{
-      display: "flex", 
-      flexDirection :"column",
-      justifySelf: "center",
-      marginTop :"5%",
-      alignItems :"center"
-    }}>
-
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Email</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "email")} />
-        <FormHelperText id="my-helper-text">
-          Human ressources
-        </FormHelperText>
-      </FormControl>
-      
-      
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Password</InputLabel>
-        <Input onChange={(e)=>handleChange(e,"password")}  type="password" />
-        <FormHelperText id="my-helper-text">
-          Confirm that passoword
-        </FormHelperText>
-      </FormControl>
-      <Button
-        onClick={handleSignIn}
-        type="button"
-        variant="contained"
+    <Box>
+      <BackToHome />
+      <Box
         sx={{
-          mt: 3,
-          px: 4,
-          py: 1.5,
-          borderRadius: 2,
-          textTransform: "none",
-          fontWeight: "bold",
-          fontSize: "1rem",
-          backgroundColor: "#1976d2",
-          '&:hover': {
-            backgroundColor: "#1565c0",
-          },
-          width : "50%",
+          minHeight: "70vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
-      >Submit</Button>
-    </Box>
-  )
-}
+      >
+        <Card elevation={4} sx={{ width: 420 }}>
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 3,
+            }}
+          >
+            <Typography variant="h5" fontWeight={600} textAlign="center">
+              Sign In
+            </Typography>
 
-export default LogInUser
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+            >
+              Access your dashboard
+            </Typography>
+
+            <FormControl fullWidth>
+              <InputLabel>Email</InputLabel>
+              <Input onChange={(e) => handleChange(e, "email")} />
+              <FormHelperText>example@email.com</FormHelperText>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Password</InputLabel>
+              <Input
+                type="password"
+                onChange={(e) => handleChange(e, "password")}
+              />
+              <FormHelperText>Enter your secure password</FormHelperText>
+            </FormControl>
+
+            <Button
+              onClick={handleSignIn}
+              variant="contained"
+              sx={{
+                mt: 1,
+                py: 1.2,
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: "1rem",
+              }}
+              fullWidth
+            >
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
+  );
+};
+
+export default LogInUser;

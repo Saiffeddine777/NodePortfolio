@@ -54,6 +54,7 @@
               ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
               FRONT_URL=${{ secrets.FRONT_URL }}
               FRONT_URL_NO_WWW=${{ secrets.FRONT_URL_NO_WWW }}
+              RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY}}
               EOF
 
 
@@ -61,6 +62,7 @@
               echo "Creating FRONTEND .env.production"
               cat <<EOF > FrontEnd/.env.production
               VITE_API_URL=${{ secrets.VITE_API_URL }}
+              VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
               EOF
 
               echo "Environment variables injected."

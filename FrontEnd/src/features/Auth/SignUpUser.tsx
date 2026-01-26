@@ -4,7 +4,11 @@ import {
   Input,
   InputLabel,
   FormHelperText,
-  Button
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
 } from "@mui/material";
 import React from "react";
 import type { User } from "../../Types/User.ts";
@@ -15,158 +19,171 @@ import { handleSuccess } from "../../Helpers/Sweetalert.ts";
 import { verifyEmptiness } from "../../Helpers/FieldVerifier.ts";
 import { useNavigate } from "react-router";
 import { api } from "../../ApiService/ApiBrain.ts";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import BackToHome from "../HomeComponents/BackToHome.tsx";
 
 type Props = {};
 
+
 const SignUpUser = ({}: Props) => {
-const navigate = useNavigate()
+  const navigate = useNavigate();
+
+
+  const {executeRecaptcha} = useGoogleReCaptcha()
+
   const signInRef = React.useRef<User>({
     firstName: "",
-    lastName :"",
-    email :"",
-    password :"",
-    confirmPassword :"",
-    phoneNumber :"",
-    occupation :"",
-    userName:""
-  })
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: "",
+    occupation: "",
+    userName: "",
+  });
 
-   const handleChange : RefChangerFunction<User> = (event, key)=>{
-       signInRef.current[key]= event.target.value as never
-   } 
+  const handleChange: RefChangerFunction<User> = (event, key) => {
+    signInRef.current[key] = event.target.value as never;
+  };
 
-
-  
-  const handleSignUp  : ()=>Promise<void | string> = async()=>{
-     try {
-      console.log(signInRef)
-      const {email , userName , lastName , phoneNumber , password ,occupation ,firstName ,confirmPassword} = signInRef.current
-      if (password !== confirmPassword ) throw Error ("Password's don't Matchs") ;
-      const result :AxiosResponse<User> = await api.post(`/api/users/`  ,verifyEmptiness({email , userName , lastName , phoneNumber , password ,occupation ,firstName}))
-      if (result.data.id){
-        handleSuccess("User Insertion" , "User inserted Sucessfully")
-        navigate("/login")
+  const handleSignUp = async () => {
+    try {
+       if (!executeRecaptcha) {
+        throw new Error("Recaptcha is not Ready");
       }
+      const token = await executeRecaptcha("contact_form");
+      const {
+        email,
+        userName,
+        lastName,
+        phoneNumber,
+        password,
+        occupation,
+        firstName,
+        confirmPassword,
+      } = signInRef.current;
+
+      if (password !== confirmPassword) throw Error("Passwords don't match");
+
+      const result: AxiosResponse<User> = await api.post(
+        `/api/users/register`,
+        verifyEmptiness({
+          email,
+          userName,
+          lastName,
+          phoneNumber,
+          password,
+          occupation,
+          firstName,
+        })
+      ,{headers:{
+        recaptcha: token
+      }});
+      console.log(result)
+        handleSuccess("Hello",`Welcome ${result?.data?.firstName}`);
+        navigate("/login");
       
-     } catch (error) {
-        handleComponentError(error)
-     }
-  }
+    } catch (error) {
+      handleComponentError(error);
+    }
+  };
+
   return (
-    <Box sx={{
-      display: "flex", 
-      flexDirection :"column",
-      justifySelf: "center",
-      marginTop :"5%",
-      alignItems :"center"
-    }}>
-      <FormControl sx={{
-        width :"200%"
-      }}>
-        <InputLabel htmlFor="my-input">Email address</InputLabel>
-        <Input  onChange={(e)=>handleChange(e, "email")}/>
-        <FormHelperText id="my-helper-text">
-          We'll never share your email. 
-        </FormHelperText>
-      </FormControl>
-      <FormControl
+    <Box>
+      <BackToHome/>
+    <Box
       sx={{
-        width :"200%"
+        minHeight: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
-      >
-        <InputLabel htmlFor="my-input">First Name</InputLabel>
-        <Input onChange={(e)=>handleChange(e,"firstName")} />
-        <FormHelperText id="my-helper-text">
-          EX : Saiffeddine 
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Last name</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "lastName")} />
-        <FormHelperText id="my-helper-text">
-          Ex : Zouaghi
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">User Name</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "userName")} />
-        <FormHelperText id="my-helper-text">
-          Ex: Saif123
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Phone number</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "phoneNumber")} />
-        <FormHelperText id="my-helper-text">
-          +216 23******
-        </FormHelperText>
-      </FormControl>
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Occupation</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "occupation")} />
-        <FormHelperText id="my-helper-text">
-          Human ressources
-        </FormHelperText>
-      </FormControl>
-      
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Password</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "password")} type="password" />
-        <FormHelperText id="my-helper-text">
-           Password
-        </FormHelperText>
-      </FormControl>
-      
-      <FormControl
-      sx={{
-        width :"200%"
-      }}
-      >
-        <InputLabel htmlFor="my-input">Confirm Password</InputLabel>
-        <Input onChange={(e)=>handleChange(e, "confirmPassword")}  type="password" />
-        <FormHelperText id="my-helper-text">
-          Confirm that passoword
-        </FormHelperText>
-      </FormControl>
-      <Button
-        onClick={handleSignUp}
-        type="button"
-        variant="contained"
-        sx={{
-          mt: 3,
-          px: 4,
-          py: 1.5,
-          borderRadius: 2,
-          textTransform: "none",
-          fontWeight: "bold",
-          fontSize: "1rem",
-          backgroundColor: "#1976d2",
-          '&:hover': {
-            backgroundColor: "#1565c0",
-          },
-          width : "50%",
-        }}
-      >Submit</Button>
+    >
+     
+      <Card elevation={4} sx={{ maxWidth: 700, width: "100%" }}>
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h5" fontWeight={600} textAlign="center" mb={1}>
+            Create an Account
+          </Typography>
+
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            textAlign="center"
+            mb={4}
+          >
+            Fill in your information to get started
+          </Typography>
+
+          <Grid container spacing={3}>
+            <FormControl fullWidth>
+              <InputLabel>Email</InputLabel>
+              <Input onChange={(e) => handleChange(e, "email")} />
+              <FormHelperText>example@email.com</FormHelperText>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>User Name</InputLabel>
+              <Input onChange={(e) => handleChange(e, "userName")} />
+              <FormHelperText>Ex: saif123</FormHelperText>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>First Name</InputLabel>
+              <Input onChange={(e) => handleChange(e, "firstName")} />
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Last Name</InputLabel>
+              <Input onChange={(e) => handleChange(e, "lastName")} />
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Phone Number</InputLabel>
+              <Input onChange={(e) => handleChange(e, "phoneNumber")} />
+              <FormHelperText>+216 XX XXX XXX</FormHelperText>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Occupation</InputLabel>
+              <Input onChange={(e) => handleChange(e, "occupation")} />
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Password</InputLabel>
+              <Input
+                type="password"
+                onChange={(e) => handleChange(e, "password")}
+              />
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel>Confirm Password</InputLabel>
+              <Input
+                type="password"
+                onChange={(e) => handleChange(e, "confirmPassword")}
+              />
+            </FormControl>
+          </Grid>
+
+          <Button
+            onClick={handleSignUp}
+            variant="contained"
+            fullWidth
+            sx={{
+              mt: 4,
+              py: 1.3,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "1rem",
+            }}
+          >
+            Create Account
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
     </Box>
   );
 };

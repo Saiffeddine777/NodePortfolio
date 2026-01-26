@@ -9,7 +9,7 @@ const passwordAccount  : undefined | string = process.env.ADMIN_PASSWORD
 
 export default async function createAnAdminifNotExist() : Promise<void> {
     try {
-        const admin :User | null = await UserRepository.findOne({where : {email : "saiffeddinezouaghi@gmail.com"}})
+        const admin :User | null = await UserRepository.findOne({where : {email : process.env.ADMIN_ACCOUNT}})
         if (admin){
             return;
         }

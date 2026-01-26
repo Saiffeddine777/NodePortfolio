@@ -20,6 +20,7 @@ import DeleteTechnology from "./DeleteTechnology.tsx";
 import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {};
+
 function TechnogiesList({}: Props) {
   const navigate = useNavigate();
   const [trigg, setTrigg] = React.useState<boolean>(false);
@@ -51,45 +52,99 @@ function TechnogiesList({}: Props) {
     );
   };
 
-
   React.useEffect(() => {
     handleFetchTechnologies();
   }, [trigg]);
 
   return (
     <Box>
-      <Button onClick={navigateToCreateTechnology} variant="outlined">
+      {/* ACTION BUTTON */}
+      <Button
+        onClick={navigateToCreateTechnology}
+        variant="outlined"
+        sx={{
+          mb: "2rem",
+          px: 3,
+          py: 1,
+          fontWeight: "bold",
+          textTransform: "none",
+        }}
+      >
         Add a Technology
       </Button>
-      <TableContainer component={Paper}>
+
+      {/* TABLE */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: 2,
+          overflow: "hidden",
+        }}
+      >
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Tech-Type</TableCell>
-              <TableCell>Score</TableCell>
-              <TableCell>Actions</TableCell>
+            <TableRow
+              sx={{
+                backgroundColor: "grey.100",
+              }}
+            >
+              <TableCell sx={{ fontWeight: "bold" }}>Id</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Tech-Type</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Score</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {technologies.map((tech, index) => {
               return (
-                <TableRow key={index}>
-                  <TableCell>{tech?.id}</TableCell>
-                  <TableCell 
+                <TableRow
+                  key={index}
                   sx={{
-                    cursor :"pointer"
+                    "&:hover": {
+                      backgroundColor: "grey.50",
+                    },
                   }}
-                  onClick={()=>navigateToSomething("onetechnology", tech?.id)}>{tech.name}</TableCell>
+                >
+                  <TableCell>{tech?.id}</TableCell>
+
+                  <TableCell
+                    sx={{
+                      cursor: "pointer",
+                      fontWeight: 500,
+                      "&:hover": {
+                        textDecoration: "underline",
+                        color: "primary.main",
+                      },
+                    }}
+                    onClick={() =>
+                      navigateToSomething("onetechnology", tech?.id)
+                    }
+                  >
+                    {tech.name}
+                  </TableCell>
+
                   <TableCell>{tech.technologyType}</TableCell>
                   <TableCell>{tech.score}</TableCell>
+
                   <TableCell>
-                    <Box>
-                      <DeleteTechnology id={tech?.id} setTrigg={setTrigg} />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <DeleteTechnology
+                        id={tech?.id}
+                        setTrigg={setTrigg}
+                      />
                       <IconButton
                         title="Modify"
-                        onClick={() => navigateToEditTechnology(tech?.id)}
+                        onClick={() =>
+                          navigateToEditTechnology(tech?.id)
+                        }
                       >
                         <EditIcon />
                       </IconButton>
