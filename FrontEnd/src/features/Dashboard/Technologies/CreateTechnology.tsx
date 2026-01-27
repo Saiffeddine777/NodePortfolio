@@ -9,6 +9,7 @@ import {
   Select,
   MenuItem,
   Paper,
+  type SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
 import { TechType, type Technology } from "../../../Types/Technology.ts";
@@ -33,6 +34,14 @@ function CreateTechnology({}: Props) {
     file: null,
   });
 
+  const [techTypeState, setTechTypeState] = React.useState<TechType>(
+    createdTech.current.technologyType,
+  );
+  const handleSelectChangeUI: (e: SelectChangeEvent) => void = (e) => {
+    const value = e.target.value as TechType;
+    setTechTypeState(value);
+  };
+
   const arrayOftechTypes: TechType[] = [
     TechType.BACKEND,
     TechType.DATABASE,
@@ -50,12 +59,12 @@ function CreateTechnology({}: Props) {
     try {
       const result = await api.post(
         `/api/technologies/`,
-        generateFromDataFromRefObject(createdTech)
+        generateFromDataFromRefObject(createdTech),
       );
       result &&
         handleSuccess(
           "Inserting the Technology",
-          "Success Inserting Technology"
+          "Success Inserting Technology",
         );
       navigateBackToTechnologies();
     } catch (error) {
@@ -106,14 +115,11 @@ function CreateTechnology({}: Props) {
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Select a type</InputLabel>
           <Select
-            value={createdTech.current.technologyType}
-            onChange={(e) =>
-              handleInputChangeIntoARefObject(
-                createdTech,
-                e,
-                "technologyType"
-              )
-            }
+            value={techTypeState}
+            onChange={(e) => {
+              handleSelectChangeUI(e);
+              handleInputChangeIntoARefObject(createdTech, e, "technologyType");
+            }}
           >
             {arrayOftechTypes.map((element, index) => (
               <MenuItem key={index} value={element}>
@@ -123,7 +129,7 @@ function CreateTechnology({}: Props) {
           </Select>
         </FormControl>
 
-        {/* SCORE */}
+     
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>I will give myself a score</InputLabel>
           <Input
@@ -135,7 +141,6 @@ function CreateTechnology({}: Props) {
           <FormHelperText>0 to 10</FormHelperText>
         </FormControl>
 
-        {/* FILE */}
         <FormControl fullWidth sx={{ mb: 4 }}>
           <Input
             type="file"
@@ -143,9 +148,7 @@ function CreateTechnology({}: Props) {
               handleInputChangeIntoARefObject(createdTech, e, "file")
             }
           />
-          <FormHelperText>
-            Insert a referencing photo (optional)
-          </FormHelperText>
+          <FormHelperText>Insert a referencing photo (optional)</FormHelperText>
         </FormControl>
 
         {/* SUBMIT */}
