@@ -111,7 +111,7 @@ function CreateTechnology({}: Props) {
           <FormHelperText>Ex: Java</FormHelperText>
         </FormControl>
 
-        {/* TYPE */}
+        
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Select a type</InputLabel>
           <Select

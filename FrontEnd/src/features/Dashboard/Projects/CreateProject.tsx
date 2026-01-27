@@ -12,6 +12,7 @@ import {
   MenuItem,
   Paper,
   Typography,
+  type SelectChangeEvent,
 } from "@mui/material";
 import {
   generateData,
@@ -35,6 +36,12 @@ function CreateProject({}: Props) {
     category: ProjectCategory.WEB,
     file: undefined,
   });
+
+  const [projectCategory , setProjectCategory] = React.useState<ProjectCategory>(projectRef.current.category);
+  const handleChangeProjectCategoryUI : (e: SelectChangeEvent) => void = (e)=>{
+    const value  =  e.target.value as ProjectCategory;
+    setProjectCategory(value);
+  }
 
   const handlePostProject: () => Promise<void> = async () => {
     try {
@@ -140,10 +147,11 @@ function CreateProject({}: Props) {
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Project category</InputLabel>
           <Select
-            value={projectRef.current.category}
-            onChange={(e) =>
-              handleInputChangeIntoARefObject(projectRef, e, "category")
-            }
+            value={projectCategory}
+            onChange={(e) =>{
+              handleChangeProjectCategoryUI(e);
+              handleInputChangeIntoARefObject(projectRef, e, "category");
+            }}
           >
             <MenuItem value={ProjectCategory.WEB}>
               {ProjectCategory.WEB}
