@@ -5,6 +5,7 @@ import {
   Login,
   AppRegistration,
   Logout,
+  AccountBox,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -64,6 +65,10 @@ const Nav = () => {
     }, 500);
   };
 
+  const handleNavigateToProfile: () => void = () => {
+    navigate("/authenticateduser");
+  };
+
   const buttonTexts: ArrayOfNavigationButtonProperties = [
     role === "Admin"
       ? {
@@ -85,6 +90,17 @@ const Nav = () => {
     navFunction: logout,
     icon: Logout,
   };
+
+  const profilePropertyObject: NavigationButtonProperties = {
+    text: "Profile",
+    navFunction: handleNavigateToProfile,
+    icon: AccountBox,
+  };
+
+  const menuItemsArray: ArrayOfNavigationButtonProperties = [
+    profilePropertyObject,
+    logoutPropertyObject
+  ];
 
   const userAuthButtons: ArrayOfNavigationButtonProperties = [
     ...(!user.authUser
@@ -156,14 +172,15 @@ const Nav = () => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              
-              <MenuItem  onClick={logoutPropertyObject.navFunction}>
-              <ListItemIcon>
-                {logoutPropertyObject.icon&& <logoutPropertyObject.icon/>}
-              </ListItemIcon>
-              {logoutPropertyObject.text}
-              </MenuItem>
-              
+              {menuItemsArray.map(
+                (item, index) =>
+                  item && (
+                    <MenuItem key={index} onClick={item.navFunction}>
+                      <ListItemIcon>{item.icon && <item.icon />}</ListItemIcon>
+                      {item.text}
+                    </MenuItem>
+                  ),
+              )}
             </Menu>
           </Box>
         )}

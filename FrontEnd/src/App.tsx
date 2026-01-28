@@ -11,6 +11,7 @@ import { api } from "./ApiService/ApiBrain.ts";
 import { setUserFromToken } from "./features/Auth/UserAuthReducer.ts";
 import { handleComponentError } from "./Helpers/ErrorHandler.ts";
 import OneProjectUserSide from "./features/HomeComponents/OneProjectUserSide.tsx";
+import AuthenticatedUser from "./features/Auth/AuthenticatedUser.tsx";
 
 const tokenIsHere= localStorage.getItem("accessToken")
 
@@ -44,6 +45,7 @@ function App() {
           <Route Component={LogInUser} path="/login"></Route>
           <Route Component={SignUpUser} path="/signup"></Route>
           <Route Component={OneProjectUserSide} path="/oneprojectuser"></Route>
+          <Route Component={AuthenticatedUser} path ="/authenticateduser"></Route>
         </Routes>
   );
 }
