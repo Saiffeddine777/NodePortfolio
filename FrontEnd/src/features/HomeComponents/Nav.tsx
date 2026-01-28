@@ -4,10 +4,18 @@ import {
   ListAltOutlined,
   Login,
   AppRegistration,
-  Logout
+  Logout,
 } from "@mui/icons-material";
-import { Box, Button, Container, type SvgIconTypeMap } from "@mui/material";
-import type { OverridableComponent } from "@mui/material/OverridableComponent";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { useNavigate } from "react-router";
 import type { UserAuthAPiType, UserRole } from "../../Types/User.ts";
 import { useAppDispatch, useAppSelector } from "../../app/Hooks.ts";
@@ -16,16 +24,11 @@ import { handleSuccess } from "../../Helpers/Sweetalert.ts";
 import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
 import { resetUser } from "../Auth/UserAuthReducer.ts";
 
-type ArrayOfNavigationButtonProperties = (
-  | {
-      text: string;
-      navFunction: () => void;
-      icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
-        muiName: string;
-      };
-    }
-  | undefined
-)[];
+import {
+  type NavigationButtonProperties,
+  type ArrayOfNavigationButtonProperties,
+} from "../../Types/Utilities.ts";
+import React from "react";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -36,6 +39,16 @@ const Nav = () => {
   const role: UserRole | undefined = user.authUser
     ? user.authUser.role
     : undefined;
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpen: (e: React.MouseEvent<HTMLElement>) => void = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+  const handleClose: () => void = () => {
+    setAnchorEl(null);
+  };
 
   const logout: () => void = () => {
     api
@@ -67,17 +80,23 @@ const Nav = () => {
     },
   ];
 
+  const logoutPropertyObject: NavigationButtonProperties = {
+    text: "Logout",
+    navFunction: logout,
+    icon: Logout,
+  };
+
   const userAuthButtons: ArrayOfNavigationButtonProperties = [
-    !user.authUser
-      ? { text: "Sign-Up", navFunction: navigateTo("/signup"), icon: Login }
-      : undefined,
-    user.authUser
-      ? { text: "Logout", navFunction: logout, icon: Logout }
-      : {
-          text: "Login",
-          navFunction: navigateTo("/login"),
-          icon: AppRegistration,
-        },
+    ...(!user.authUser
+      ? [
+          { text: "Sign-Up", navFunction: navigateTo("/signup"), icon: Login },
+          {
+            text: "Login",
+            navFunction: navigateTo("/login"),
+            icon: AppRegistration,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -104,23 +123,50 @@ const Nav = () => {
           })}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2 }}>
-          {userAuthButtons.map((btn, i) => {
-            const Icon = btn?.icon;
-            return btn ? (
-              <Button
-                key={i}
-                variant="contained"
-                onClick={btn?.navFunction}
-                startIcon={Icon ? <Icon /> : undefined}
-              >
-                {btn?.text}
-              </Button>
-            ) : (
-              <></>
-            );
-          })}
-        </Box>
+        {user.authUser === null ? (
+          <Box sx={{ display: "flex", gap: 2 }}>
+            {userAuthButtons.map((btn, i) => {
+              const Icon = btn?.icon;
+              return btn ? (
+                <Button
+                  key={i}
+                  variant="contained"
+                  onClick={btn?.navFunction}
+                  startIcon={Icon ? <Icon /> : undefined}
+                >
+                  {btn?.text}
+                </Button>
+              ) : (
+                <></>
+              );
+            })}
+          </Box>
+        ) : (
+          <Box>
+            <IconButton onClick={handleOpen} size="small">
+              <Avatar
+                alt={user.authUser.firstName}
+                src={user.authUser?.imageUrl}
+              />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              
+              <MenuItem  onClick={logoutPropertyObject.navFunction}>
+              <ListItemIcon>
+                {logoutPropertyObject.icon&& <logoutPropertyObject.icon/>}
+              </ListItemIcon>
+              {logoutPropertyObject.text}
+              </MenuItem>
+              
+            </Menu>
+          </Box>
+        )}
       </Container>
     </Box>
   );

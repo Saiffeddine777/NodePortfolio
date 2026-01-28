@@ -171,7 +171,6 @@ function CreateProject({}: Props) {
           </FormHelperText>
         </FormControl>
 
-        {/* IMAGE */}
         <FormControl fullWidth sx={{ mb: 4 }}>
           <Input
             type="file"
@@ -182,7 +181,6 @@ function CreateProject({}: Props) {
           <FormHelperText>Project preview image</FormHelperText>
         </FormControl>
 
-        {/* SUBMIT */}
         <Button
           fullWidth
           variant="contained"

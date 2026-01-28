@@ -29,12 +29,18 @@ export type ObjectRefChangerFunction = <
   key: keyof T // <--- keyof T allows autocomplete
 ) => void;
 
-export type ArrayOfNavigationButtonProperties = {
-  text: string;
-  navFunction: () => void;
-  icon?: MuiIconType;
-}[];
 
 export type ArrayOfMenuItems = {name :string , icon : MuiIconType}
 
 export type FormDataGeneratorFunction =<T extends Object>(refObject : React.RefObject<T>) => FormData
+export type NavigationButtonProperties =
+  | {
+      text: string;
+      navFunction: () => void;
+      icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
+        muiName: string;
+      };
+    }
+  | undefined;
+
+export type ArrayOfNavigationButtonProperties = NavigationButtonProperties[];
