@@ -12,6 +12,7 @@ import { setUserFromToken } from "./features/Auth/UserAuthReducer.ts";
 import { handleComponentError } from "./Helpers/ErrorHandler.ts";
 import OneProjectUserSide from "./features/HomeComponents/OneProjectUserSide.tsx";
 import AuthenticatedUser from "./features/Auth/AuthenticatedUser.tsx";
+import ModifyUser from "./features/Dashboard/Users/ModifyUser.tsx";
 
 const tokenIsHere= localStorage.getItem("accessToken")
 
@@ -46,6 +47,7 @@ function App() {
           <Route Component={SignUpUser} path="/signup"></Route>
           <Route Component={OneProjectUserSide} path="/oneprojectuser"></Route>
           <Route Component={AuthenticatedUser} path ="/authenticateduser"></Route>
+          <Route Component={ModifyUser} path="/modifyyourprofile"/>
         </Routes>
   );
 }

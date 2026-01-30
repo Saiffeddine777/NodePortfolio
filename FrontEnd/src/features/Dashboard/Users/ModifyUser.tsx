@@ -48,7 +48,7 @@ const ModifyUser = ({}: Props) => {
   const [trigg, setTrigg] = React.useState<boolean>(false);
 
   const navigateToUsers = () => {
-    navigate("/dashboard/userlist");
+    navigate(location.pathname!=="/modifyyourprofile"?"/dashboard/userlist" :"/");
   };
 
   const handleChange: RefChangerFunction<User> = (event, key) => {
@@ -106,6 +106,10 @@ const ModifyUser = ({}: Props) => {
       setTrigg(!trigg);
     } catch (error) {
       handleComponentError(error);
+    }finally{
+      setTimeout(()=>{
+        window.location.reload();
+      },500)
     }
   };
 
@@ -128,7 +132,7 @@ const ModifyUser = ({}: Props) => {
         onClick={navigateToUsers}
         sx={{ mb: 2, textTransform: "none" }}
       >
-        ← Back to Users
+        {location.pathname!=="/modifyyourprofile"?"← Back to Users":"Back Home"}
       </Button>
 
       <Paper

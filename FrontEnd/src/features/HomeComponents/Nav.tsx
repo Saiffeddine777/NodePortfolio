@@ -6,6 +6,7 @@ import {
   AppRegistration,
   Logout,
   AccountBox,
+  Settings,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -51,6 +52,12 @@ const Nav = () => {
     setAnchorEl(null);
   };
 
+  const handleNavigateToModifyYourSelf : ()=>void = ()=>{
+    navigate("/modifyyourprofile" , {state:{
+      id : user.authUser?.id
+    }});
+  }
+
   const logout: () => void = () => {
     api
       .post(`api/users/logout`)
@@ -91,6 +98,12 @@ const Nav = () => {
     icon: Logout,
   };
 
+  const modifyPropertyObject : NavigationButtonProperties={
+    text : "Settings",
+    navFunction : handleNavigateToModifyYourSelf,
+    icon : Settings
+  }
+
   const profilePropertyObject: NavigationButtonProperties = {
     text: "Profile",
     navFunction: handleNavigateToProfile,
@@ -99,6 +112,7 @@ const Nav = () => {
 
   const menuItemsArray: ArrayOfNavigationButtonProperties = [
     profilePropertyObject,
+    modifyPropertyObject,
     logoutPropertyObject
   ];
 
