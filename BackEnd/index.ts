@@ -12,6 +12,7 @@ import createAnAdminifNotExist from "./SpecialServices/CreateAnAdminIfNotExist";
 import { refreshTokenController } from "./RefreshToken";
 import { healthCheck } from "./Helpers/ExpressHealthCheck";
 import PortfolioFileRouter from "./Routers/PortfolioFileRouter";
+import TokenRouter from "./Routers/TokenRouter";
 
 const port: number = parseInt(process.env.SERVER_PORT as string);
 const origin : string[] =[ 
@@ -23,7 +24,8 @@ const app: express.Express = express();
 app.use(cors({
   origin,
   credentials : true, 
-  exposedHeaders :["Authorization"]
+  exposedHeaders :["Authorization" , "special-token" , "Content-Type"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }));
 
 app.use(express.json());
@@ -36,6 +38,7 @@ app.use("/api/technologies", TechnologyRouter);
 app.use("/api/emails", EmailRouter);
 app.use("/api/projects", ProjectRouter);
 app.use("/api/files", PortfolioFileRouter);
+app.use("/api/tokens" , TokenRouter);
 
 DataSource.initialize()
   .then(() => {

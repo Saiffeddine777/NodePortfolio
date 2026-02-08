@@ -8,6 +8,8 @@ import {
   updateEmail
 } from "../Services/EmailService";
 import { errorhandler } from "../Handlers/ErrorHandlers";
+import { handleSendingForgetPasswordEmail } from "../SpecialServices/HandleSendingForgetPassword";
+import { handleSendingError } from "../Handlers/ErrorHttpHandler";
 
 export const postAnEMail: (
   req: Request<any, any, Partial<Email>>,
@@ -92,6 +94,26 @@ export const putOneEmail: (
     res.status(500).json(error);
   }
 };
+
+export const sendEmailController: (
+  req: Request<any, any ,{from : "change"| "forget" , email: string}>,
+  res:Response
+)=>Promise<Response|void> =async (req, res)=>{
+  try {
+     const nature = req.body.from; 
+     const email = req.body.email;
+     const url = req.get("origin") as string
+     if (nature ==="forget"){
+       await handleSendingForgetPasswordEmail(email, url)
+     }
+     
+     res.status(200).json({message : "Message email has been issued"});
+    
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error, res); 
+  }
+} 
 
 
 

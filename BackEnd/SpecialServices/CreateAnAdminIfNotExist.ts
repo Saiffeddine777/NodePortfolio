@@ -23,7 +23,8 @@ export default async function createAnAdminifNotExist() : Promise<void> {
             password :hashedPassword, 
             occupation : "developer",
             userName : "UseROne11",
-            phoneNumber  : "+216 54040987"
+            phoneNumber  : "+216 54040987",
+            verified : true
            })
            await UserRepository.save (createdAdmin)
            console.log("Admin has been created.")

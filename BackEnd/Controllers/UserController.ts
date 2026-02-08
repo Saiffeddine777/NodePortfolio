@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../Entities/User";
 import {
+  changePasswordService,
   createUser,
   findAllUsers,
   findOneUser,
@@ -15,6 +16,10 @@ import { errorhandler } from "../Handlers/ErrorHandlers";
 import { JsonWebTokenError } from "jsonwebtoken";
 import { isProduction } from "../Config/Environement";
 import { handleSendingError } from "../Handlers/ErrorHttpHandler";
+import { NullableOrUndefined } from "../Types/UtilityTypes";
+import { findToken, modifyTokenRecord } from "../Services/TokenService";
+import { Token } from "../Entities/Token";
+import { testValidity } from "../Helpers/TokenValidity";
 
 export const postUser: (
   req: MulterRequest<any, any, Partial<User>>,
@@ -42,7 +47,7 @@ export const register: (
     res.status(201).json(result);
   } catch (error) {
     errorhandler(error);
-    await handleSendingError(error,res);
+    await handleSendingError(error, res);
   }
 };
 
@@ -218,5 +223,30 @@ export const logout: (req: Request, res: Response) => Promise<void> = async (
   } catch (error) {
     errorhandler(error);
     res.status(500).json(error);
+  }
+};
+
+export const changePassword: (
+  req: Request,
+  res: Response,
+) => Promise<Response | void> = async (req, res) => {
+  try {
+    console.log("here");
+    const { password } = req.body;
+    const token = req.headers["special-token"];
+    const tokenObject: NullableOrUndefined<Token> = await findToken(
+      token as string,
+    );
+    const isValid: boolean = testValidity(tokenObject);
+    if (!isValid) {
+      return res.status(401).json({ message: "Token is expired!" });
+    }
+    const extractedEmail = tokenObject?.email;
+    await changePasswordService(password, extractedEmail as string);
+    await modifyTokenRecord(token as string);
+    res.status(200).json({ message: "Password has been changed" });
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error, res);
   }
 };

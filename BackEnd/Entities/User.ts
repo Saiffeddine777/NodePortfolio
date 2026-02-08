@@ -70,6 +70,12 @@ export class User {
   })
   role!: UserRole;
 
+  @Column ({
+    type : "boolean",
+    default : false 
+  })
+  verified ! : boolean;
+
   @OneToMany(()=>Email , (email)=>email.user)
   emails !:Email[]
   

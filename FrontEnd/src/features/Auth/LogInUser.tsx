@@ -51,6 +51,14 @@ const LogInUser = ({}: Props) => {
     }
   };
 
+  const handleNavigateInOrderToChangeForgetPassword: () => void = () => {
+    navigate("/sendemail", {
+      state: {
+        from: "forget",
+      },
+    });
+  };
+
   return (
     <Box>
       <BackToHome />
@@ -112,6 +120,21 @@ const LogInUser = ({}: Props) => {
             >
               Sign In
             </Button>
+            <Typography
+              variant="body2"
+              onClick={handleNavigateInOrderToChangeForgetPassword}
+              sx={{
+                alignSelf: "flex-end",
+                cursor: "pointer",
+                color: "primary.main",
+                fontWeight: 500,
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Forgot password?
+            </Typography>
           </CardContent>
         </Card>
       </Box>

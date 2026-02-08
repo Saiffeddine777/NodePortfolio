@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, type NavigateFunction } from "react-router";
+import { Route, Routes, /* useNavigate, type NavigateFunction */ } from "react-router";
 import Home from "./features/Home.tsx";
 import Dashboard from "./features/Dashboard/Dashboard.tsx";
 import ContactUs from "./features/ContactUs.tsx";
@@ -13,11 +13,13 @@ import { handleComponentError } from "./Helpers/ErrorHandler.ts";
 import OneProjectUserSide from "./features/HomeComponents/OneProjectUserSide.tsx";
 import AuthenticatedUser from "./features/Auth/AuthenticatedUser.tsx";
 import ModifyUser from "./features/Dashboard/Users/ModifyUser.tsx";
+import InputEmail from "./features/Auth/InputEmail.tsx";
+import ChangePassword from "./features/Auth/ChangePassword.tsx";
 
 const tokenIsHere= localStorage.getItem("accessToken")
 
 function App() {
-  const navigate :NavigateFunction = useNavigate()
+  // const navigate :NavigateFunction = useNavigate()
   const user = useAppSelector(state => state.userAuth.authUser)
   const dispatch = useAppDispatch()
   const fetchUserWithToken: ()=>Promise <void> = async  function(){
@@ -34,7 +36,7 @@ function App() {
     if (!user && tokenIsHere){
       fetchUserWithToken()
     }
-    navigate("/")
+    // navigate("/")
   },[])
 
   return (
@@ -48,6 +50,8 @@ function App() {
           <Route Component={OneProjectUserSide} path="/oneprojectuser"></Route>
           <Route Component={AuthenticatedUser} path ="/authenticateduser"></Route>
           <Route Component={ModifyUser} path="/modifyyourprofile"/>
+          <Route Component={InputEmail} path="/sendemail"/>
+          <Route Component={ChangePassword} path="/changepassword/:token"/>
         </Routes>
   );
 }

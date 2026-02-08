@@ -196,3 +196,13 @@ export const modifyOneUser: (
     throw error;
   }
 };
+
+export const changePasswordService : (password:string , email:string )=> Promise<UpdateResult |undefined>  = async (password, email)=>{
+  try {
+    const hashedPassword :string = await bcrypt.hash(password , parseInt(process.env.BCRYPT_SALT as string))
+    return await UserRepository.update({email} , {password :hashedPassword})
+  } catch (error) {
+    errorhandler(error);
+    throw error;
+  }
+}

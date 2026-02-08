@@ -79,7 +79,6 @@ const SignUpUser = ({}: Props) => {
       ,{headers:{
         recaptcha: token
       }});
-      console.log(result)
         handleSuccess("Hello",`Welcome ${result?.data?.firstName}`);
         navigate("/login");
       
