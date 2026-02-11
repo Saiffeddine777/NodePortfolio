@@ -41,17 +41,18 @@ function App() {
 
   return (
         <Routes>
-          <Route Component={Home} path="/"></Route>
-          <Route Component={Dashboard} path="/dashboard/*"></Route>
-          <Route Component={ContactUs} path="/contactus"></Route>
-          <Route Component={CV} path="/cv"></Route>
-          <Route Component={LogInUser} path="/login"></Route>
-          <Route Component={SignUpUser} path="/signup"></Route>
-          <Route Component={OneProjectUserSide} path="/oneprojectuser"></Route>
-          <Route Component={AuthenticatedUser} path ="/authenticateduser"></Route>
+          <Route Component={Home} path="/"/>
+          <Route Component={Dashboard} path="/dashboard/*"/>
+          <Route Component={ContactUs} path="/contactus"/>
+          <Route Component={CV} path="/cv"/>
+          <Route Component={LogInUser} path="/login"/>
+          <Route Component={SignUpUser} path="/signup"/>
+          <Route Component={OneProjectUserSide} path="/oneprojectuser"/>
+          <Route Component={AuthenticatedUser} path ="/authenticateduser"/>
           <Route Component={ModifyUser} path="/modifyyourprofile"/>
           <Route Component={InputEmail} path="/sendemail"/>
-          <Route Component={ChangePassword} path="/changepassword/:token"/>
+          <Route Component={ChangePassword} path="/changepassword"/>
+          <Route Component={ChangePassword} path={"/changepassword/:token"}/>
         </Routes>
   );
 }

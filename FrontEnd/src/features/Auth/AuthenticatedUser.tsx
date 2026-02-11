@@ -4,14 +4,19 @@ import {
   Typography,
   Divider,
   Paper,
+  Button,
 } from "@mui/material";
 import { useAppSelector } from "../../app/Hooks.ts";
 import ProfileRow from "../Components/ProfileRow.tsx";
+import { useNavigate } from "react-router";
 
 
 type Props = {};
 
 const AuthenticatedUser = ({}: Props) => {
+
+  const navigate = useNavigate();
+
   const authenticatedUser = useAppSelector(
     (state) => state.userAuth.authUser
   );
@@ -36,50 +41,93 @@ const AuthenticatedUser = ({}: Props) => {
     createdAt,
   } = authenticatedUser;
 
+  const handleNavigateToChangePassword  : ()=>void = ()=>{
+    navigate("/changepassword")
+  }
+
   return (
-    <Box
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "center",
+      mt: 8,
+      px: 2,
+    }}
+  >
+    <Paper
+      elevation={6}
       sx={{
-        display: "flex",
-        justifyContent: "center",
-        mt: 6,
+        width: "100%",
+        maxWidth: 640,
+        p: 5,
+        borderRadius: 4,
+        position: "relative",
       }}
     >
-      <Paper
-        elevation={3}
+      {/* Change Password Button (Top Right Clean Placement) */}
+      <Box
         sx={{
-          width: "100%",
-          maxWidth: 600,
-          p: 4,
-          borderRadius: 3,
+          position: "absolute",
+          top: 24,
+          right: 24,
         }}
       >
-        <Box
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={handleNavigateToChangePassword}
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            mb: 2,
+            textTransform: "none",
+            fontWeight: 500,
+            borderRadius: 2,
           }}
         >
-          <Avatar
-            src={imageUrl}
-            sx={{ width: 120, height: 120 }}
-          />
-        </Box>
+          Change Password
+        </Button>
+      </Box>
 
-        <Typography variant="h5" textAlign="center">
-          {firstName} {lastName}
-        </Typography>
+      {/* Avatar Section */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mb: 3,
+        }}
+      >
+        <Avatar
+          src={imageUrl}
+          sx={{
+            width: 130,
+            height: 130,
+            boxShadow: 3,
+          }}
+        />
+      </Box>
 
-        <Typography
-          variant="body2"
-          textAlign="center"
-          color="text.secondary"
-        >
-          @{userName} • {role}
-        </Typography>
+      {/* Name */}
+      <Typography
+        variant="h5"
+        textAlign="center"
+        fontWeight={600}
+        gutterBottom
+      >
+        {firstName} {lastName}
+      </Typography>
 
-        <Divider sx={{ my: 3 }} />
+      {/* Username + Role */}
+      <Typography
+        variant="body2"
+        textAlign="center"
+        color="text.secondary"
+        sx={{ mb: 3 }}
+      >
+        @{userName} • {role}
+      </Typography>
 
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Info Rows */}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <ProfileRow label="Email" value={email} />
         <ProfileRow label="Occupation" value={occupation} />
         <ProfileRow label="Phone" value={phoneNumber} />
@@ -87,9 +135,11 @@ const AuthenticatedUser = ({}: Props) => {
           label="Joined"
           value={new Date(createdAt as Date).toLocaleDateString()}
         />
-      </Paper>
-    </Box>
-  );
+      </Box>
+    </Paper>
+  </Box>
+);
+
 };
 
 export default AuthenticatedUser;

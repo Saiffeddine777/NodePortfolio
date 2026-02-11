@@ -8,11 +8,13 @@ import { Typography, Box, FormControl, Card, Input , InputLabel , CardContent ,F
 import FullPageLoader from "../Components/FullPageLoader.tsx";
 import BackToHome from "../HomeComponents/BackToHome.tsx";
 import { handleSuccess } from "../../Helpers/Sweetalert.ts";
+import { useAppSelector } from "../../app/Hooks.ts";
 
 
 type Props = {};
 
 function ChangePassword({}: Props) {
+  const user  = useAppSelector(state=>state.userAuth.authUser)
   const passwordRef: React.RefObject<{
     password: string;
     confirmPassword: string;
@@ -60,9 +62,9 @@ function ChangePassword({}: Props) {
       if (confirmPassword !== password){
         throw new Error ("Passwords do not match please verify");
       }
-      const result : AxiosResponse = await api.put(`/api/users/changepassword` ,{password} ,{headers :{
+      const result : AxiosResponse =!user? await api.put(`/api/users/changepassword` ,{password} ,{headers :{
         "special-token" : decodeURIComponent(params.token!)
-      }})
+      }}) :  await api.put(`/api/users/userchangepassword` ,{password , email : user.email})
       handleSuccess("Message" ,result.data.message);
     } catch (error) {
       handleComponentError(error)
@@ -70,11 +72,13 @@ function ChangePassword({}: Props) {
   }
 
   React.useEffect(() => {
-    handleTheVerficationOfTheToken(params.token as string);
+    if (!user){
+      handleTheVerficationOfTheToken(params.token as string);
+    }
   }, []);
 return loading ? (
   <FullPageLoader open={loading} />
-) : renderElements ? (
+) : renderElements ||user ? (
   <Box
     sx={{
       minHeight: "100vh",

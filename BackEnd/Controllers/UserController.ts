@@ -231,7 +231,6 @@ export const changePassword: (
   res: Response,
 ) => Promise<Response | void> = async (req, res) => {
   try {
-    console.log("here");
     const { password } = req.body;
     const token = req.headers["special-token"];
     const tokenObject: NullableOrUndefined<Token> = await findToken(
@@ -244,6 +243,20 @@ export const changePassword: (
     const extractedEmail = tokenObject?.email;
     await changePasswordService(password, extractedEmail as string);
     await modifyTokenRecord(token as string);
+    res.status(200).json({ message: "Password has been changed" });
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error, res);
+  }
+};
+
+export const userChangePassword: (
+  req: Request,
+  res: Response,
+) => Promise<Response | void> = async (req, res) => {
+  try {
+    const { password , email } = req.body;
+    await changePasswordService(password, email as string);
     res.status(200).json({ message: "Password has been changed" });
   } catch (error) {
     errorhandler(error);
