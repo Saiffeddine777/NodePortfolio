@@ -31,6 +31,7 @@ import {
   type ArrayOfNavigationButtonProperties,
 } from "../../Types/Utilities.ts";
 import React from "react";
+import Logo from "./Logo.tsx";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -135,10 +136,11 @@ const Nav = () => {
         maxWidth="lg"
         sx={{ display: "flex", justifyContent: "space-between" }}
       >
+        <Logo/>
         <Box sx={{ display: "flex", gap: 2 }}>
           {buttonTexts.map((btn, i) => {
             const Icon = btn?.icon;
-            return btn ? (
+            return btn ? (  
               <Button
                 key={i}
                 variant="text"
