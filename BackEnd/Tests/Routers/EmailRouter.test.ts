@@ -1,6 +1,8 @@
 jest.mock("../../Middlewares/VerifyAdmin", () => ({
   __esModule: true,
   isAdmin: jest.fn((req: any, res: any, next: any) => next()),
+  isValid: jest.fn((req: any, res: any, next: any) => next()),
+
 }));
 
 jest.mock("../../Middlewares/RecaptchaVerification", ()=>({
@@ -14,6 +16,8 @@ jest.mock("../../Controllers/EmailController", () => ({
   getOneEmail: jest.fn(),
   deleteOneEmail: jest.fn(),
   putOneEmail: jest.fn(),
+   sendEmailController: jest.fn(),
+
 }));
 
 import request from "supertest";
@@ -41,6 +45,7 @@ describe("EmailRouter tests", () => {
         phoneNumber: "+1987654321",
         password: "hashed_password_mock",
         occupation: "Backend Engineer",
+        verified : true,
         firstName: "Luna",
         lastName: "Morales",
         role: UserRole.ADMIN,
@@ -68,6 +73,7 @@ describe("EmailRouter tests", () => {
       lastName: "Morales",
       role: UserRole.ADMIN,
       publicId: "user_avatar_123",
+      verified :true,
       imageUrl:
         "https://res.cloudinary.com/demo/image/upload/v1690000000/user_avatar.png",
       createdAt: new Date(),

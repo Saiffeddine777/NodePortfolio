@@ -1,9 +1,10 @@
 
 
 jest.mock("../../Middlewares/VerifyAdmin", () => ({
-  __esModule: true,
   isAdmin: jest.fn((req: any, res: any, next: any) => next()),
+  isValid: jest.fn((req: any, res: any, next: any) => next()),
 }));
+
 
 jest.mock ("../../Handlers/UploadImageHandler" ,()=>{
   return (req:any , res:any ,next:any)=>next()
