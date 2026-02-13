@@ -31,6 +31,7 @@ describe("EmailController testing the controller that handles posting emails", (
         phoneNumber: "+1987654321",
         password: "hashed_password_mock",
         occupation: "Backend Engineer",
+        verified : true,
         firstName: "Luna",
         lastName: "Morales",
         role: UserRole.ADMIN,

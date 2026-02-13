@@ -45,6 +45,7 @@ describe("EmailController testing the getOneEmail function should it fail or suc
         occupation: "Backend Engineer",
         firstName: "Luna",
         lastName: "Morales",
+        verified :true,
         role: UserRole.ADMIN,
         publicId: "user_avatar_123",
         imageUrl:

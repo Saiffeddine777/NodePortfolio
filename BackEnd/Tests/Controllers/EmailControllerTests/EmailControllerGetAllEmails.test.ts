@@ -38,6 +38,7 @@ describe("getAllEmails testing findAllEmails that find all emails", () => {
           firstName: "Luna",
           lastName: "Morales",
           role: UserRole.ADMIN,
+          verified :true,
           publicId: "user_avatar_123",
           imageUrl: "https://res.cloudinary.com/demo/image/upload/v1690000000/user_avatar.png",
           createdAt: new Date(),
