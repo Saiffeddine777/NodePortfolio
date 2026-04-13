@@ -22,3 +22,22 @@ export const handleSuccess = (action: string, message: string) => {
 export const handleError = (action: string, message: string) => {
   handleAlert(action, message, "error");
 };
+
+export const handleConfirmation :(title :string , text:string)=>Promise<boolean> = async (title:string, text:string)=>{
+  try {
+        const confirm = await Swal.fire({
+          title,
+          text,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#6b7280",
+          confirmButtonText: "Yes, delete it",
+          cancelButtonText: "Cancel",
+        });
+    
+        return confirm.isConfirmed
+  } catch (error) {
+    throw error ;
+  }
+} 

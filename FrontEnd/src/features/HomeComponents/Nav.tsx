@@ -7,6 +7,7 @@ import {
   Logout,
   AccountBox,
   Settings,
+  QuestionMark
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -77,6 +78,10 @@ const Nav = () => {
     navigate("/authenticateduser");
   };
 
+  const handleNavigateToJiraTickets : ()=>void = ()=>{
+    navigate("/jiraprojects")
+  }
+
   const buttonTexts: ArrayOfNavigationButtonProperties = [
     role === "Admin"
       ? {
@@ -110,10 +115,16 @@ const Nav = () => {
     navFunction: handleNavigateToProfile,
     icon: AccountBox,
   };
+    const jiraProjectsPropertyObject: NavigationButtonProperties = {
+    text: "Report an issue",
+    navFunction: handleNavigateToJiraTickets,
+    icon: QuestionMark ,
+  };
 
   const menuItemsArray: ArrayOfNavigationButtonProperties = [
     profilePropertyObject,
     modifyPropertyObject,
+    jiraProjectsPropertyObject,
     logoutPropertyObject
   ];
 

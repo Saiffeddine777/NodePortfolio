@@ -21,6 +21,6 @@ export const handleSendingError: (
     }
   }
   res.status(500).json({
-    message: "Internal server error",
+    message: "Internal server error", error
   });
 };

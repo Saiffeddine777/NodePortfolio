@@ -3,7 +3,7 @@ import { IconButton } from "@mui/material"
 import type { SetStateAction } from "react";
 import type React from "react";
 import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
-import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { handleConfirmation, handleSuccess } from "../../../Helpers/Sweetalert.ts";
 import { api } from "../../../ApiService/ApiBrain.ts";
 
 type Props = {
@@ -16,6 +16,8 @@ function DeleteProject({
 }: Props) {
     const handleDeleteProject : ()=>Promise <void> = async ()=>{
       try {
+        const confirmation = await handleConfirmation("Delete Project?","This will be permantly deleted")
+        if (!confirmation) return ;
         await api.delete(`/api/projects/${id}`)
         setTrigg (state=>!state)
         handleSuccess("Project Deleted","This project has been successfuly deleted")

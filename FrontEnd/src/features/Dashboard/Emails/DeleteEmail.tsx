@@ -1,6 +1,6 @@
 import type { SetStateAction } from "react";
 import type React from "react";
-import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { handleConfirmation, handleSuccess } from "../../../Helpers/Sweetalert.ts";
 import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 import { IconButton } from "@mui/material";
 import { DeleteForever } from "@mui/icons-material";
@@ -16,6 +16,8 @@ function DeleteEmail({
   
   const handleDeleteEmail :()=>Promise<void> =async () =>{
     try {
+      const confirmation = await handleConfirmation("Delete Email?","This will be permantly deleted")
+      if (!confirmation) return ;
       await api.delete(`/api/emails/${id}`)
       setTrigg(state=>!state)
       handleSuccess("Email deleted" , "Email has been successfully deleted")

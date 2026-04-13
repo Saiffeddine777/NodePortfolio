@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Email } from "./Email";
+import {Ticket} from "./Ticket";
 
 export enum UserRole {
   ADMIN = "Admin",
@@ -78,6 +79,9 @@ export class User {
 
   @OneToMany(()=>Email , (email)=>email.user)
   emails !:Email[]
+
+  @OneToMany(()=>Ticket , (ticket)=>ticket.user)
+  tickets !:Ticket[]
   
   @UpdateDateColumn({ type: "timestamp" })
   updatedAt!: Date;

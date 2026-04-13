@@ -13,6 +13,7 @@ import { refreshTokenController } from "./RefreshToken";
 import { healthCheck } from "./Helpers/ExpressHealthCheck";
 import PortfolioFileRouter from "./Routers/PortfolioFileRouter";
 import TokenRouter from "./Routers/TokenRouter";
+import TicketRouter from "./Routers/TicketRouter";
 
 const port: number = parseInt(process.env.SERVER_PORT as string);
 const origin : string[] =[ 
@@ -39,6 +40,7 @@ app.use("/api/emails", EmailRouter);
 app.use("/api/projects", ProjectRouter);
 app.use("/api/files", PortfolioFileRouter);
 app.use("/api/tokens" , TokenRouter);
+app.use("/api/tickets" , TicketRouter);
 
 DataSource.initialize()
   .then(() => {

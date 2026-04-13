@@ -92,7 +92,11 @@ const LogInUser = ({}: Props) => {
 
             <FormControl fullWidth>
               <InputLabel>Email</InputLabel>
-              <Input onChange={(e) => handleChange(e, "email")} />
+              <Input onChange={(e) => handleChange(e, "email")} 
+              onKeyDown={(e)=>{
+                if(e.key==="Enter") handleSignIn();
+              }}
+              />
               <FormHelperText>example@email.com</FormHelperText>
             </FormControl>
 
@@ -101,6 +105,9 @@ const LogInUser = ({}: Props) => {
               <Input
                 type="password"
                 onChange={(e) => handleChange(e, "password")}
+                onKeyDown={(e)=>{
+                if(e.key==="Enter") handleSignIn();
+              }}
               />
               <FormHelperText>Enter your secure password</FormHelperText>
             </FormControl>

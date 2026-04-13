@@ -14,6 +14,7 @@ import {
   Home,
   SupervisedUserCircle,
   FileUpload,
+  AirplaneTicket,
 } from "@mui/icons-material";
 
 const Menu = () => {
@@ -27,6 +28,7 @@ const Menu = () => {
     { name: "Technologies", icon: Biotech, path: "/dashboard/technologies" },
     { name: "Projects", icon: AccountTree, path: "/dashboard/projectlist" },
     { name: "Files", icon: FileUpload, path: "/dashboard/portfoliofilelist" },
+    { name: "Tickets", icon: AirplaneTicket, path: "/dashboard/ticketlist" },
   ];
 
   return (

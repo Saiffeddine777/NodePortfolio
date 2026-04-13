@@ -15,6 +15,8 @@ import AuthenticatedUser from "./features/Auth/AuthenticatedUser.tsx";
 import ModifyUser from "./features/Dashboard/Users/ModifyUser.tsx";
 import InputEmail from "./features/Auth/InputEmail.tsx";
 import ChangePassword from "./features/Auth/ChangePassword.tsx";
+import JiraProjects from "./features/Tickets/JiraProjects.tsx";
+import CreateAnIssue from "./features/Tickets/CreateAnIssue.tsx";
 
 const tokenIsHere= localStorage.getItem("accessToken")
 
@@ -53,6 +55,8 @@ function App() {
           <Route Component={InputEmail} path="/sendemail"/>
           <Route Component={ChangePassword} path="/changepassword"/>
           <Route Component={ChangePassword} path={"/changepassword/:token"}/>
+          <Route Component={JiraProjects} path={"/jiraprojects"}/>
+          <Route Component={CreateAnIssue} path={"/createanissue"} />
         </Routes>
   );
 }

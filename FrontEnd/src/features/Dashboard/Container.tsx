@@ -17,6 +17,8 @@ import CreateProject from "./Projects/CreateProject.tsx";
 import UpdateProject from "./Projects/UpdateProject.tsx";
 import PortfolioFileList from "./PortfolioFiles/PortfolioFileList.tsx";
 import CreatePortfolioFile from "./PortfolioFiles/CreatePortfolioFile.tsx";
+import TicketsList from "./Tickets/TicketsList.tsx";
+import OneTicket from "./Tickets/OneTicket.tsx";
 
 const Container = () => {
   return (
@@ -54,14 +56,13 @@ const Container = () => {
           <Route path="/createproject" Component={CreateProject} />
           <Route path="/updateproject" Component={UpdateProject} />
           <Route path="/portfoliofilelist" Component={PortfolioFileList} />
-          <Route
-            path="/createportfoliofile"
-            Component={CreatePortfolioFile}
-          />
+          <Route path="/ticketlist" Component={TicketsList} />
+          <Route path="/createportfoliofile" Component={CreatePortfolioFile} />
+          <Route path="/oneticket" Component={OneTicket} />
         </Routes>
       </Paper>
     </Box>
   );
 };
 
-export default Container;
+export default Container; 

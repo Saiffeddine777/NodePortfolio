@@ -2,8 +2,8 @@
     "compilerOptions": {
       /* Target & modules */
       "target": "ES2022",
-      "module": "nodenext",
-      "moduleResolution": "nodenext",
+      "module": "ESNext",
+    "moduleResolution": "Bundler",
       "lib": ["ES2022", "DOM", "DOM.Iterable"],
       /* JSX & React */
       "jsx": "react-jsx",
@@ -15,7 +15,6 @@
       "noUnusedParameters": true,
       "noFallthroughCasesInSwitch": true,
       "noUncheckedIndexedAccess": true,
-
       /* Skip type checks for node_modules for speed */
       "skipLibCheck": true,
 

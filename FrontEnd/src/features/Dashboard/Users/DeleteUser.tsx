@@ -2,7 +2,7 @@ import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import type React from "react";
 import type { SetStateAction } from "react";
-import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
+import { handleConfirmation, handleSuccess } from "../../../Helpers/Sweetalert.ts";
 import { handleComponentError } from "../../../Helpers/ErrorHandler.ts";
 import { useNavigate } from "react-router";
 import { api } from "../../../ApiService/ApiBrain.ts";
@@ -16,6 +16,9 @@ const DeleteUser = ({ id, setTrigg , componentName }: Props) => {
   const navigate = useNavigate()
   const handleDeleteUser: () => Promise<void> = async () => {
     try {
+
+      const confirmation = await handleConfirmation("Delete this user?","This will be permantly deleted")
+      if (!confirmation) return ;
       const result = await api.delete(`/api/users/${id}`);
       if (result.data && !componentName) {
         setTrigg && setTrigg((state) => {
@@ -38,4 +41,4 @@ const DeleteUser = ({ id, setTrigg , componentName }: Props) => {
   );
 };
 
-export default DeleteUser;
+  export default DeleteUser;
