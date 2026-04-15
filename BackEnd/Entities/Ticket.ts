@@ -48,7 +48,9 @@ export class Ticket{
     @UpdateDateColumn({type :"timestamp"})
     updatedAt ! :Date;
 
-    @OneToMany(()=>Email , (email)=>email.ticket)
+    @OneToMany(()=>Email , (email)=>email.ticket,{
+        cascade :true
+    })
     emails!: Email[]
 
 }

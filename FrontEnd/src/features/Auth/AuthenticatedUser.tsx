@@ -9,6 +9,7 @@ import {
 import { useAppSelector } from "../../app/Hooks.ts";
 import ProfileRow from "../Components/ProfileRow.tsx";
 import { useNavigate } from "react-router";
+import BackToHome from "../HomeComponents/BackToHome.tsx";
 
 
 type Props = {};
@@ -46,6 +47,8 @@ const AuthenticatedUser = ({}: Props) => {
   }
 
   return (
+    <Box>
+      <BackToHome/>
   <Box
     sx={{
       display: "flex",
@@ -137,6 +140,7 @@ const AuthenticatedUser = ({}: Props) => {
         />
       </Box>
     </Paper>
+  </Box>
   </Box>
 );
 

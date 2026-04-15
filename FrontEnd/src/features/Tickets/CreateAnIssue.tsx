@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, type Location } from "react-router";
+import { useLocation, useNavigate, type Location, type NavigateFunction } from "react-router";
 import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
 import type { AxiosResponse } from "axios";
 import { api } from "../../ApiService/ApiBrain.ts";
@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
 import { handleInputChangeIntoARefObject } from "../../Helpers/FieldVerifier.ts";
+import BackToHome from "../HomeComponents/BackToHome.tsx";
 
 type Props = {};
 
@@ -42,6 +43,7 @@ function CreateAnIssue({}: Props) {
   const key = location.state.key;
   const [loading, setLoading] = React.useState<boolean>(false);
   const [selectedType, setSelectedType] = React.useState<string>("");
+  const navigate :NavigateFunction = useNavigate()
 
   const issueRef = React.useRef<JiraIssue>({
     userId: authenticatedUser?.id,
@@ -67,11 +69,13 @@ function CreateAnIssue({}: Props) {
       handleComponentError(error);
     } finally {
       setLoading(false);
+      navigate("/");
+      
     }
   };
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 600, mx: "auto" }}>
-      {/* Header */}
+      <BackToHome/>
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
           <BugReportRoundedIcon sx={{ color: "text.disabled", fontSize: 20 }} />

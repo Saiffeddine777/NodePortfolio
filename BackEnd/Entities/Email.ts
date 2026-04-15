@@ -39,9 +39,10 @@ export class Email {
     @UpdateDateColumn({type : "timestamp"})
     updatedAt !:Date;
 
-    @ManyToOne(()=>Ticket , (ticket)=>ticket.emails , {nullable :true})
+    @ManyToOne(()=>Ticket , (ticket)=>ticket.emails , {
+        onDelete :"CASCADE",
+        nullable :true
+    })
     @JoinColumn({name:"ticketId"})
     ticket! :Ticket
-    
-
 }

@@ -39,7 +39,7 @@ const JiraProjects = ({}: Props) => {
   const [jiraProjects, setJiraProjects] = React.useState<JiraProject[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
-
+  
   const navigate :NavigateFunction  = useNavigate()
 
   const handleNavigateToJiraComponent  : (param :string ,key:string )=>void = (param , key)=>{
@@ -292,7 +292,7 @@ const JiraProjects = ({}: Props) => {
                       >
                         Create an Issue
                       </Button>
-                      <Button
+                      {/* <Button
                         size="small"
                         variant="outlined"
                         fullWidth
@@ -312,7 +312,7 @@ const JiraProjects = ({}: Props) => {
                         }}
                       >
                         Suggest a Feature
-                      </Button>
+                      </Button> */}
                     </Box>
                   </CardContent>
                 </Card>

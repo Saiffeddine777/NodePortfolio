@@ -19,6 +19,7 @@ import {
   Stack,
   Collapse,
   Badge,
+  CircularProgress
 } from "@mui/material";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -31,7 +32,6 @@ import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { handleSuccess } from "../../../Helpers/Sweetalert.ts";
-
 type Props = {};
 
 const issueTypeColorMap: Record<string, { bg: string; color: string }> = {
@@ -81,6 +81,7 @@ const OneTicket = ({}: Props) => {
   const [responseEmail , setResponseEmail] = React.useState<string>("")
   const [textEditor , setTextEditor ] =React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(true);
+  const [loadingSubmit, setLoadingSubmit] = React.useState<boolean>(false);
   const [emailsOpen, setEmailsOpen] = React.useState(false);
 
   const makeTextEditorVisible = ()=>{
@@ -105,6 +106,7 @@ const OneTicket = ({}: Props) => {
 
   const submitResponse : ()=>Promise<void> = async ()=>{
      try {
+      setLoadingSubmit(true)
       const result : AxiosResponse = await api.put(`/api/tickets/solvejiraticket/${location.state.id}`,{
         status :"Done",
         jiraID: ticket.jiraID,
@@ -112,12 +114,16 @@ const OneTicket = ({}: Props) => {
         user: ticket.user,
         description : ticket.description
       })
+      
       handleSuccess("Success",result.data.message);
      } catch (error) {
       handleComponentError(error);
      }finally{
-      setTrigger(!trigg)
-     }
+      setTrigger(!trigg);
+      setLoadingSubmit(false);
+      setResponseEmail("");
+      setTextEditor(false);
+    }
      
   }
 
@@ -575,21 +581,22 @@ const OneTicket = ({}: Props) => {
                 {responseEmail !== "" && (
                   <Button
                     variant="contained"
-                    color="success" // Green feels more like "Solving/Finishing"
+                    color="success"
                     size="medium"
-                    startIcon={<SendIcon />}
+                    disabled={loadingSubmit}
+                    startIcon={loadingSubmit ? <CircularProgress size={18} color="inherit" /> : <SendIcon />}
                     sx={{
                       borderRadius: '10px',
                       textTransform: "none",
                       fontWeight: 600,
-                      boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)', // Subtle green glow
+                      boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
                       '&:hover': {
                         boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)',
                       }
                     }}
                     onClick={submitResponse}
                   >
-                    Solve
+                    {loadingSubmit ? "Solving..." : "Solve"}
                   </Button>
                 )}
 
@@ -618,7 +625,6 @@ const OneTicket = ({}: Props) => {
 
           <Divider />
 
-          {/* Actions */}
           <Box sx={{ display: "flex", gap: 1 }}>
             <Button
               variant="contained"

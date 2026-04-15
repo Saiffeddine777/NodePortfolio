@@ -31,7 +31,6 @@ export const MuiTextEditor: React.FC<MuiEditorProps> = ({ initialContent = "", o
   if (!editor) return null;
 
   return (
-    // 2. Wrap everything in the Provider
     <RichTextEditorProvider editor={editor}>
       <Paper 
         variant="outlined" 
@@ -42,7 +41,7 @@ export const MuiTextEditor: React.FC<MuiEditorProps> = ({ initialContent = "", o
           '&:focus-within': {
             borderColor: 'primary.main',
             borderWidth: '2px',
-            margin: '-1px', // Prevents layout shift when border thickens
+            margin: '-1px',
           }
         }}
       >

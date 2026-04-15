@@ -80,13 +80,12 @@ export const loadTickets: () => Promise<Ticket[]> = async () => {
   }
 };
 
-export const removeOneIssue: (id: string) => Promise<DeleteResult> = async (
-  id,
-) => {
+export const removeOneIssue: (id: string) => Promise<DeleteResult> = async (id) => {
   try {
-    const ticket: NullableOrUndefined<Ticket> =
-      await TicketRepository.findOneBy({ id });
-    await jiraHandler.deleteIssue(ticket?.jiraID as string);
+    const ticket = await TicketRepository.findOneBy({ id });
+    if (!ticket) throw new Error(`Ticket with id "${id}" not found in database.`);
+    if (!ticket.jiraID) throw new Error(`Ticket "${id}" has no Jira id.`);
+    await jiraHandler.deleteIssue(ticket.jiraID);
     return await TicketRepository.delete({ id });
   } catch (error) {
     errorhandler(error);
