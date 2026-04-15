@@ -1,5 +1,6 @@
 import { getAllEmails } from "../../../Controllers/EmailController";
 import { Email } from "../../../Entities/Email";
+import { Ticket } from "../../../Entities/Ticket";
 import { UserRole } from "../../../Entities/User";
 import { errorhandler } from "../../../Handlers/ErrorHandlers";
 import { findAllEmails } from "../../../Services/EmailService";
@@ -44,11 +45,13 @@ describe("getAllEmails testing findAllEmails that find all emails", () => {
           createdAt: new Date(),
           updatedAt: new Date(),
           emails: [],
+           tickets : []
         },
         id: 1,
         isRead: false,
         createdAt: new Date(),
         updatedAt: new Date(),
+        ticket : {} as Ticket
       },
     ];
 

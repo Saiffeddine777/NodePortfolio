@@ -53,6 +53,7 @@ describe("EmailController testing the getOneEmail function should it fail or suc
         createdAt: new Date(),
         updatedAt: new Date(),
         emails: [],
+         tickets: [],
       },
       id: 1,
       isRead: false,

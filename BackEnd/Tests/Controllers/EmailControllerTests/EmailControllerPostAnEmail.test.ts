@@ -41,6 +41,7 @@ describe("EmailController testing the controller that handles posting emails", (
         createdAt: new Date(),
         updatedAt: new Date(),
         emails: [],
+        tickets: [],
       },
     };
 
