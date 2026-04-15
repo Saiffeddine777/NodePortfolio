@@ -7,6 +7,17 @@ import {
   removeOneEmail,
   updateEmail,
 } from "../../Services/EmailService";
+import nodemailer from "nodemailer";  // ADD THIS
+
+// ADD THIS BLOCK
+jest.mock("nodemailer", () => ({
+  __esModule: true,
+  default: {
+    createTransport: jest.fn().mockReturnValue({
+      sendMail: jest.fn().mockResolvedValue({ messageId: "mocked-id" }),
+    }),
+  },
+}));
 
 jest.mock("../../Repositories/EmailRepository", () => ({
   __esModule: true,
@@ -80,9 +91,7 @@ describe("EmailService Test", () => {
   test("updateEmail sould uddate Email by ID", async () => {
     const updateResult = { affected: 1 } as any;
     (EmailRepository.update as jest.Mock).mockResolvedValue(updateResult);
-
     const result = await updateEmail(1);
-
     expect(EmailRepository.update).toHaveBeenCalledWith(1, { isRead: true });
     expect(result).toEqual(updateResult);
   });
