@@ -27,7 +27,7 @@
     register: jest.fn(),
     putOneUser: jest.fn(),
     changePassword: jest.fn(),       
-  userChangePassword: jest.fn()    
+  userChangePassword: jest.fn()     
   }));
 
   import { isAdmin, isValid } from "../../Middlewares/VerifyAdmin";
