@@ -53,8 +53,8 @@
               ADMIN_ACCOUNT=${{ secrets.ADMIN_ACCOUNT }}
               ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
               FRONT_URL=${{ secrets.FRONT_URL }}
-              FRONT_URL_NO_WWW=${{ secrets.FRONT_URL_NO_WWW }}
-              RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY}}
+              JIRA_TOKEN=${{ secrets.JIRA_TOKEN }}
+              JIRA_DOMAIN=${{ secrets.JIRA_DOMAIN }}
               EOF
 
 
