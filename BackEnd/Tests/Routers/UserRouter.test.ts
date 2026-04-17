@@ -12,7 +12,7 @@
 
   jest.mock("../../Middlewares/RecaptchaVerification", ()=>({
     __esModule : true,
-    verifyRecaptcha : jest.fn((req: any, res: any, next: any) => next()),
+    verifyRecaptcha: jest.fn(() => (req: any, res: any, next: any) => next()),
   }))
 
 
