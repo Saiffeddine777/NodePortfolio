@@ -7,8 +7,8 @@ import { publicLimiter } from "../Middlewares/PublicLimiter";
 
 const UserRouter = Router();
 
-UserRouter.post("/register" , publicLimiter, verifyRecaptcha, UserController.register);
-UserRouter.post("/login", publicLimiter, verifyRecaptcha, UserController.logIn);
+UserRouter.post("/register" , publicLimiter, verifyRecaptcha(["contact_form"]), UserController.register);
+UserRouter.post("/login", publicLimiter, verifyRecaptcha(["login"]), UserController.logIn);
 UserRouter.get("/token", UserController.logInWithTokenController);
 UserRouter.put("/changepassword"  , UserController.changePassword)
 UserRouter.put("/userchangepassword" , isValid , UserController.userChangePassword)

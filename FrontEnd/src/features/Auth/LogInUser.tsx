@@ -40,7 +40,7 @@ const LogInUser = ({}: Props) => {
       throw new Error("Recaptcha is not Ready");
     }
     try {
-      const token = await executeRecaptcha("contact_form");
+      const token = await executeRecaptcha("login");
       await dispatch(
         authApiThunk({ token, ...signInCredentials.current }),
       ).unwrap();
