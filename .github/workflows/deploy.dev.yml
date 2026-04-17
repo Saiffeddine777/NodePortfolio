@@ -56,6 +56,8 @@
               FRONT_URL_NO_WWW=${{ secrets.FRONT_URL_NO_WWW }}
               JIRA_TOKEN=${{ secrets.JIRA_TOKEN }}
               JIRA_DOMAIN=${{ secrets.JIRA_DOMAIN }}
+              RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}
+              VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
               EOF
 
 
