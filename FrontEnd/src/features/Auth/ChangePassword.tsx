@@ -4,16 +4,21 @@ import { useParams } from "react-router";
 import { api } from "../../ApiService/ApiBrain.ts";
 import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
 import { handleInputChangeIntoARefObject } from "../../Helpers/FieldVerifier.ts";
-import { Typography, Box, FormControl, Card, Input , InputLabel , CardContent ,FormHelperText , Button} from "@mui/material";
+import { Typography, Box, FormControl, Card, Input , InputLabel , CardContent ,FormHelperText , Button, InputAdornment, IconButton} from "@mui/material";
 import FullPageLoader from "../Components/FullPageLoader.tsx";
 import BackToHome from "../HomeComponents/BackToHome.tsx";
 import { handleSuccess } from "../../Helpers/Sweetalert.ts";
 import { useAppSelector } from "../../app/Hooks.ts";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 
 type Props = {};
 
 function ChangePassword({}: Props) {
+  
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    React.useState<boolean>(false);
   const user  = useAppSelector(state=>state.userAuth.authUser)
   const passwordRef: React.RefObject<{
     password: string;
@@ -120,15 +125,38 @@ return loading ? (
 
         <FormControl fullWidth>
           <InputLabel>Password</InputLabel>
-          <Input onChange={handleChangePassword} type="password" />
+          <Input 
+          onChange={handleChangePassword} 
+          type={showPassword?"text":"password"} 
+           endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        edge="end"
+                      >
+                      {showPassword ? <Visibility/> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+          />
           <FormHelperText>Enter your new password</FormHelperText>
         </FormControl>
 
         <FormControl fullWidth>
           <InputLabel>Confirm Password</InputLabel>
           <Input
-            type="password"
+            type={showConfirmPassword?"text":"password"}
             onChange={handleChangeConfirmPassword}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  edge="end"
+                >
+                {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
           />
           <FormHelperText>Re-enter your new password</FormHelperText>
         </FormControl>

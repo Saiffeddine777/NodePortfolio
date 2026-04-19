@@ -8,6 +8,8 @@ import {
   Card,
   CardContent,
   Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import React from "react";
 import type { RefChangerFunction } from "../../Types/Utilities.ts";
@@ -19,10 +21,12 @@ import { useNavigate, type NavigateFunction } from "react-router";
 import { handleComponentError } from "../../Helpers/ErrorHandler.ts";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import BackToHome from "../HomeComponents/BackToHome.tsx";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 type Props = {};
 
 const LogInUser = ({}: Props) => {
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const dispatch = useAppDispatch();
   const signInCredentials = React.useRef<SignInData>({
@@ -103,11 +107,21 @@ const LogInUser = ({}: Props) => {
             <FormControl fullWidth>
               <InputLabel>Password</InputLabel>
               <Input
-                type="password"
+                type={showPassword?"text":"password"}
                 onChange={(e) => handleChange(e, "password")}
                 onKeyDown={(e)=>{
                 if(e.key==="Enter") handleSignIn();
               }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                    onClick={()=>setShowPassword(prev=>!prev)}
+                    edge="end"
+                    >
+                      {showPassword ?<Visibility/> :<VisibilityOff/>}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
               <FormHelperText>Enter your secure password</FormHelperText>
             </FormControl>
