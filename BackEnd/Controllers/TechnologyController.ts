@@ -5,11 +5,13 @@ import {
   findAllTechnologies,
   findOneTechnology,
   findTechnologiesByType,
+  findWithPagination,
   modifyOneTechnology,
   removeOneTechnology,
 } from "../Services/TechnologyService";
 import { MulterRequest } from "../Types/ExpressTypes";
 import { errorhandler } from "../Handlers/ErrorHandlers";
+import { handleSendingError } from "../Handlers/ErrorHttpHandler";
 
 
 export const postATechnology: (
@@ -101,3 +103,16 @@ export const updateOneTechnology: (
     res.status(500).json(error);
   }
 };
+
+
+export const getTechnologiesWithPagination : (req: Request<{limit :string , page :string}> , res : Response) => Promise<void> = async (req, res)=>{
+  try {
+    const limit :number = parseInt(req.params.limit);
+    const page :number = parseInt(req.params.page);
+    const result = await findWithPagination(page , limit);
+    res.status(200).json(result);
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error, res);    
+  }
+}
