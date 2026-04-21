@@ -13,6 +13,7 @@ import {
   Button,
   IconButton,
   Paper,
+  Pagination,
 } from "@mui/material";
 import DeleteProject from "./DeleteProject.tsx";
 import { useNavigate, type NavigateFunction } from "react-router";
@@ -25,8 +26,10 @@ function ProjectList({}: Props) {
   const navigate: NavigateFunction = useNavigate();
 
   const [projects, setProjects] = React.useState<Project[]>([]);
+  const [page, setPage] = React.useState<number>(1);
+  const [total, setTotal] = React.useState<number>(0);
   const [trigg, setTrigg] = React.useState<boolean>(false);
-
+  const limit: number = 6;
   const arrayOfColumns: string[] = [
     "Id",
     "Project Name",
@@ -36,10 +39,14 @@ function ProjectList({}: Props) {
 
   const handleFetchProjects: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<Project[]> = await api.get(
-        `/api/projects/`
-      );
-      setProjects(result.data);
+      const result: AxiosResponse<{
+        total: number;
+        page: number;
+        lastPage: number;
+        data: Project[];
+      }> = await api.get(`/api/projects/getpaginatedprojects/${limit}/${page}`);
+      setProjects(result.data.data);
+      setTotal(result.data.total);
     } catch (error) {
       handleComponentError(error);
     }
@@ -55,14 +62,8 @@ function ProjectList({}: Props) {
     navigate("/dashboard/createproject");
   };
 
-  const navigateSomeWhere = (
-    unSlachedPath: string,
-    id?: number
-  ): void => {
-    navigate(
-      `/dashboard/${unSlachedPath}`,
-      id ? { state: { id } } : undefined
-    );
+  const navigateSomeWhere = (unSlachedPath: string, id?: number): void => {
+    navigate(`/dashboard/${unSlachedPath}`, id ? { state: { id } } : undefined);
   };
 
   React.useEffect(() => {
@@ -103,10 +104,7 @@ function ProjectList({}: Props) {
             >
               {arrayOfColumns.map((element, index) => {
                 return (
-                  <TableCell
-                    key={index}
-                    sx={{ fontWeight: "bold" }}
-                  >
+                  <TableCell key={index} sx={{ fontWeight: "bold" }}>
                     {element}
                   </TableCell>
                 );
@@ -136,9 +134,7 @@ function ProjectList({}: Props) {
                         color: "primary.main",
                       },
                     }}
-                    onClick={() =>
-                      navigateToOneProject(project.id)
-                    }
+                    onClick={() => navigateToOneProject(project.id)}
                   >
                     {project.projectName}
                   </TableCell>
@@ -156,19 +152,13 @@ function ProjectList({}: Props) {
                       <IconButton
                         title="Modify"
                         onClick={() =>
-                          navigateSomeWhere(
-                            "updateproject",
-                            project.id
-                          )
+                          navigateSomeWhere("updateproject", project.id)
                         }
                       >
                         <EditIcon />
                       </IconButton>
 
-                      <DeleteProject
-                        id={project.id}
-                        setTrigg={setTrigg}
-                      />
+                      <DeleteProject id={project.id} setTrigg={setTrigg} />
                     </Box>
                   </TableCell>
                 </TableRow>
@@ -177,6 +167,17 @@ function ProjectList({}: Props) {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ pb: 4 }}>
+        {" "}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={Math.ceil(total / limit)}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
+            color="primary"
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }

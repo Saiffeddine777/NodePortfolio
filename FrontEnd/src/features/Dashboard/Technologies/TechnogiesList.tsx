@@ -26,7 +26,7 @@ function TechnogiesList() {
   const [technologies, setTechnologies] = React.useState<Technology[]>([]);
   const [total, setTotal] = React.useState<number>(0);
   const [page, setPage] = React.useState<number>(1);
-  const limit: number = 8;
+  const limit: number = 6;
 
   const handleFetchTechnologies = async () => {
     try {
