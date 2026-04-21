@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   IconButton,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -26,7 +27,9 @@ const Userlist = ({}: Props) => {
   const navigate = useNavigate();
   const [users, setUsers] = React.useState<User[]>([]);
   const [trigg, setTrigg] = React.useState<boolean>(false);
-
+  const [total, setTotal] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);
+  const limit: number = 6;
   const navigateToCreateAuser = () => {
     navigate("/dashboard/createuser");
   };
@@ -41,17 +44,23 @@ const Userlist = ({}: Props) => {
 
   const fetchUserList: () => Promise<void> = async () => {
     try {
-      const response: AxiosResponse<User[]> = await api.get(`/api/users`);
-      setUsers(response.data);
+      const response: AxiosResponse<{
+        data: User[];
+        page: number;
+        lastPage: number;
+        total: number;
+      }> = await api.get(`/api/users/getpaginatedusers/${limit}/${page}`);
+      setUsers(response.data.data);
+      setTotal(response.data.total);
     } catch (error) {
       handleComponentError(error);
     }
   };
 
-  const navigateToUserSomething: (
-    path: string,
-    id?: number
-  ) => void = (path, id) => {
+  const navigateToUserSomething: (path: string, id?: number) => void = (
+    path,
+    id,
+  ) => {
     navigate(`/dashboard/${path}`, {
       state: { id: id },
     });
@@ -59,7 +68,7 @@ const Userlist = ({}: Props) => {
 
   React.useEffect(() => {
     fetchUserList();
-  }, [trigg]);
+  }, [trigg, page]);
 
   return (
     <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
@@ -95,10 +104,7 @@ const Userlist = ({}: Props) => {
           <TableHead>
             <TableRow>
               {headTitles.map((element, index) => (
-                <TableCell
-                  key={index}
-                  sx={{ fontWeight: "bold" }}
-                >
+                <TableCell key={index} sx={{ fontWeight: "bold" }}>
                   {element}
                 </TableCell>
               ))}
@@ -121,9 +127,7 @@ const Userlist = ({}: Props) => {
                 </TableCell>
 
                 <TableCell
-                  onClick={() =>
-                    navigateToUserSomething("oneuser", user?.id)
-                  }
+                  onClick={() => navigateToUserSomething("oneuser", user?.id)}
                   sx={{
                     cursor: "pointer",
                     fontWeight: 500,
@@ -142,18 +146,12 @@ const Userlist = ({}: Props) => {
 
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <DeleteUser
-                      id={user?.id}
-                      setTrigg={setTrigg}
-                    />
+                    <DeleteUser id={user?.id} setTrigg={setTrigg} />
 
                     <IconButton
                       title="Modify"
                       onClick={() =>
-                        navigateToUserSomething(
-                          "modifyuser",
-                          user?.id
-                        )
+                        navigateToUserSomething("modifyuser", user?.id)
                       }
                       size="small"
                     >
@@ -166,6 +164,17 @@ const Userlist = ({}: Props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ pb: 4 }}>
+        {" "}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={Math.ceil(total / limit)}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
+            color="primary"
+          />
+        </Box>
+      </Box>
     </Paper>
   );
 };

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router";
-import logo from "../.././../public/terminal-svgrepo-com.svg";
+import logo from "/terminal-svgrepo-com.svg";
 
 type Props = {};
 

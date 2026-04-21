@@ -17,6 +17,7 @@ import {
   Typography,
   Tooltip,
   IconButton,
+  Pagination,
 } from "@mui/material";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
@@ -58,6 +59,9 @@ const getChipStyle = (
 function TicketsList({}: Props) {
   const [tickets, setTickets] = React.useState<Ticket[]>([]);
   const [trigg, setTrigg] = React.useState<boolean>(false);
+  const [total, setTotal] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);
+  const limit: number = 6;
 
   const navigate: NavigateFunction = useNavigate();
   const handleNavigationToOneTicket = (id: string) => {
@@ -66,10 +70,14 @@ function TicketsList({}: Props) {
 
   const handleFetchTickets: () => Promise<void> = async () => {
     try {
-      const result: AxiosResponse<Ticket[]> = await api.get(
-        `/api/tickets/getjiratickets`,
-      );
-      setTickets(result.data);
+      const result: AxiosResponse<{
+        total: number;
+        page: number;
+        lastPage: number;
+        data: Ticket[];
+      }> = await api.get(`/api/tickets/getpaginatedtickets/${limit}/${page}`);
+      setTickets(result.data.data);
+      setTotal(result.data.total);
     } catch (error) {
       handleComponentError(error);
     }
@@ -77,7 +85,7 @@ function TicketsList({}: Props) {
 
   React.useEffect(() => {
     handleFetchTickets();
-  }, [trigg]);
+  }, [trigg, page]);
 
   return (
     <Box>
@@ -147,10 +155,12 @@ function TicketsList({}: Props) {
                 >
                   {/* Issue Key */}
                   <TableCell
-                   sx={{"&:hover":{
-                    cursor:"pointer"
-                   }}}
-                   onClick={()=>handleNavigationToOneTicket(ticket.id)}
+                    sx={{
+                      "&:hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                    onClick={() => handleNavigationToOneTicket(ticket.id)}
                   >
                     <Typography
                       variant="body2"
@@ -290,6 +300,17 @@ function TicketsList({}: Props) {
           </Box>
         )}
       </TableContainer>
+      <Box sx={{ pb: 4 }}>
+        {" "}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={Math.ceil(total / limit)}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
+            color="primary"
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }

@@ -11,6 +11,8 @@ import {
   TableRow,
   Paper,
   Typography,
+  Pagination,
+  Box,
 } from "@mui/material";
 import DeleteEmail from "./DeleteEmail.tsx";
 import { useNavigate } from "react-router";
@@ -20,13 +22,20 @@ const EmailList = () => {
   const navigate = useNavigate();
   const [emails, setEmails] = React.useState<EmailInterface[]>([]);
   const [trigg, setTrigg] = React.useState(false);
+  const [total, setTotal] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);
+  const limit: number = 6;
 
   const handleFetchEmails = async (): Promise<void> => {
     try {
-      const result: AxiosResponse<EmailInterface[]> = await api.get(
-        "/api/emails"
-      );
-      setEmails(result.data);
+      const result: AxiosResponse<{
+        total: number;
+        page: number;
+        lastPage: number;
+        data: EmailInterface[];
+      }> = await api.get(`/api/emails/getpaginatedemails/${limit}/${page}`);
+      setEmails(result.data.data);
+      setTotal(result.data.total);
     } catch (error) {
       handleComponentError(error);
     }
@@ -38,7 +47,7 @@ const EmailList = () => {
 
   React.useEffect(() => {
     handleFetchEmails();
-  }, [trigg]);
+  }, [trigg, page]);
 
   return (
     <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
@@ -47,9 +56,7 @@ const EmailList = () => {
       </Typography>
 
       {emails.length === 0 ? (
-        <Typography color="text.secondary">
-          No emails found.
-        </Typography>
+        <Typography color="text.secondary">No emails found.</Typography>
       ) : (
         <TableContainer>
           <Table>
@@ -75,9 +82,7 @@ const EmailList = () => {
                     },
                   }}
                 >
-                  <TableCell color="text.secondary">
-                    #{email.id}
-                  </TableCell>
+                  <TableCell color="text.secondary">#{email.id}</TableCell>
 
                   <TableCell
                     onClick={() => navigateToOneEmail(email.id)}
@@ -96,10 +101,7 @@ const EmailList = () => {
                   <TableCell>{email.subject}</TableCell>
 
                   <TableCell align="right">
-                    <DeleteEmail
-                      id={email.id}
-                      setTrigg={setTrigg}
-                    />
+                    <DeleteEmail id={email.id} setTrigg={setTrigg} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -107,6 +109,17 @@ const EmailList = () => {
           </Table>
         </TableContainer>
       )}
+      <Box sx={{ pb: 4 }}>
+        {" "}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={Math.ceil(total / limit)}
+            page={page}
+            onChange={(_, newPage) => setPage(newPage)}
+            color="primary"
+          />
+        </Box>
+      </Box>
     </Paper>
   );
 };

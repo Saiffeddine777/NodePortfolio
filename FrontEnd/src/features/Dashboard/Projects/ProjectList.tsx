@@ -68,7 +68,7 @@ function ProjectList({}: Props) {
 
   React.useEffect(() => {
     handleFetchProjects();
-  }, [trigg]);
+  }, [trigg, page]);
 
   return (
     <Box>
