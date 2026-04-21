@@ -4,6 +4,8 @@ import { EmailRepository } from "../Repositories/EmailRepository";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import { sendEmail } from "../Handlers/NodeMailerHandler";
 import { DeepPartial } from "typeorm";
+import { handlePagination } from "../Handlers/PaginationHandler";
+import { AppRepository } from "../Types/UtilityTypes";
 
 export const createAnEmail: (email: DeepPartial<Email>) => Promise<Email> = async (
   email,
@@ -82,3 +84,13 @@ export const updateEmail: (id: number) => Promise<UpdateResult> = async (
     throw error;
   }
 };
+
+
+export const findEmailsWithPagination : (limit :number , page:number)=>Promise<any> = async (limit , page)=>{
+  try {
+    return await handlePagination(limit , page, EmailRepository as AppRepository)
+  } catch (error) {
+    errorhandler(error);
+    throw error;    
+  }
+}

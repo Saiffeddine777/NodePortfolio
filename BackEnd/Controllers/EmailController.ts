@@ -5,7 +5,8 @@ import {
   removeOneEmail,
   findAllEmails,
   findOneEmail,
-  updateEmail
+  updateEmail,
+  findEmailsWithPagination
 } from "../Services/EmailService";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import { handleSendingForgetPasswordEmail } from "../SpecialServices/HandleSendingForgetPassword";
@@ -114,6 +115,19 @@ export const sendEmailController: (
     handleSendingError(error, res); 
   }
 } 
+
+
+export const getPaginatedEmails :(req :Request<{limit:string, page:string}>, res:Response)=>Promise<void> = async (req, res)=>{
+  try {
+    const limit : number = parseInt(req.params.limit);
+    const page : number = parseInt (req.params.page);
+    const result = await findEmailsWithPagination(limit, page);
+    res.status(200).json(result)
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error , res);
+  } 
+}
 
 
 
