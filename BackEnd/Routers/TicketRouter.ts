@@ -9,6 +9,7 @@ TicketRouter.get("/getjiratickets" , TicketController.getAllTickets);
 TicketRouter.delete("/deletejiraticket/:id" , TicketController.deleteOneTicket);
 TicketRouter.get("/getonejiraticket/:id" , TicketController.getOneTicket);
 TicketRouter.put("/solvejiraticket/:id", TicketController.solveOneTicket);
+TicketRouter.get("/getpaginatedtickets/:limit/:page", TicketController.getPaginatedTickets);
  
 
 export default TicketRouter

@@ -10,5 +10,6 @@ ProjectRouter.get("/:id" , ProjectController.getOneProject)
 ProjectRouter.get("/" , ProjectController.getAllProjects)
 ProjectRouter.delete("/:id",isAdmin , ProjectController.deleteOneProject)
 ProjectRouter.put("/:id",isAdmin , uploadImage, ProjectController.putOneProject)
+ProjectRouter.get("/getpaginatedprojects/:limit/:page", ProjectController.getPaginatedProjects)
 
 export default  ProjectRouter;

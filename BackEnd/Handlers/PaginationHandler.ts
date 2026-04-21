@@ -9,7 +9,7 @@ export const handlePagination: (
     const[data , total] = await repository.findAndCount({
       skip :(page-1)*limit,
       take :limit,
-      order :{id:"ASC"}
+      order :{createdAt:"ASC"}
     })
 
     return {

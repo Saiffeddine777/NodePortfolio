@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createJiraTicketAndStoreReference, findOneTicket, loadProjects, loadTickets, removeOneIssue, updateSolvingOneTicket,  } from "../Services/TicketService";
+import { createJiraTicketAndStoreReference, findOneTicket, findTicketsWithPagination, loadProjects, loadTickets, removeOneIssue, updateSolvingOneTicket,  } from "../Services/TicketService";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import { handleSendingError } from "../Handlers/ErrorHttpHandler";
 import { Ticket } from "../Entities/Ticket";
@@ -121,6 +121,19 @@ export const solveOneTicket :(req:Request<{id:string}> , res :Response )=> Promi
   } catch (error) {
     errorhandler(error);
     handleSendingError(error, res);    
+  }
+}
+
+
+export const getPaginatedTickets : (req:Request<{limit:string , page:string}> ,res:Response)=>Promise<void> = async (req,res)=>{
+  try {
+    const limit :number = parseInt(req.params.limit);
+    const page :number = parseInt(req.params.page);
+    const result = await findTicketsWithPagination(limit , page)
+    res.status(200).json(result);
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error , res);  
   }
 }
 

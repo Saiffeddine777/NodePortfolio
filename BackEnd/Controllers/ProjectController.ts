@@ -4,11 +4,13 @@ import {
   createOneProject,
   findAllProjects,
   findOneProject,
+  findProjectsWithPagination,
   modifyOneProject,
   removeOneProject,
 } from "../Services/ProjectService";
 import { MulterRequest } from "../Types/ExpressTypes";
 import { errorhandler } from "../Handlers/ErrorHandlers";
+import { handleSendingError } from "../Handlers/ErrorHttpHandler";
 
 export const postOneProject: (
   req: MulterRequest<any, any, Partial<Project>>,
@@ -94,3 +96,15 @@ export const putOneProject: (
     res.status(500).json(error);
   }
 };
+
+export const getPaginatedProjects : (req:Request<{limit : string , page:string}> , res:Response)=>Promise<void> = async (req,res)=>{
+  try {
+    const limit : number = parseInt(req.params.limit)
+    const page : number = parseInt(req.params.page)
+    const result = await findProjectsWithPagination(limit, page)
+    res.status(200).json(result);
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error,res);
+  }
+}

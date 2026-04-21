@@ -14,18 +14,19 @@ import { sendEmail } from "../Handlers/NodeMailerHandler";
 import { createUserEmailDataFactoryFunction } from "../DataGenerators/EmailData";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import { CustomJwtPayLoad } from "../Middlewares/VerifyAdmin";
-import { NullableOrUndefined } from "../Types/UtilityTypes";
+import { AppRepository, NullableOrUndefined } from "../Types/UtilityTypes";
 import { generateToken } from "../Adapters/GenerateToken";
+import { handlePagination } from "../Handlers/PaginationHandler";
 
 export const createUser: (
   user: Partial<User>,
-  userImage?: Express.Multer.File
+  userImage?: Express.Multer.File,
 ) => Promise<Partial<User> | undefined> = async (user, userImage) => {
   try {
     const generatedPassoword: string = passwordGenerator();
     const hashedPassword: string = await bcrypt.hash(
       generatedPassoword,
-      parseInt(process.env.BCRYPT_SALT as string)
+      parseInt(process.env.BCRYPT_SALT as string),
     );
     user.password = hashedPassword;
     const cloudinaryUploadResult: UploadApiResponse | undefined =
@@ -40,7 +41,7 @@ export const createUser: (
     const emailingObj = createUserEmailDataFactoryFunction(
       userCreated.userName,
       generatedPassoword,
-      userCreated.email
+      userCreated.email,
     );
     await sendEmail(emailingObj);
     return userCreated;
@@ -50,15 +51,18 @@ export const createUser: (
   }
 };
 
-export const signUpUser: (user: Partial<User>) => Promise<Partial<User>> = async (
-  user
-) => {
+export const signUpUser: (
+  user: Partial<User>,
+) => Promise<Partial<User>> = async (user) => {
   try {
-    const hashedPassoword = await bcrypt.hash(user.password as string, parseInt(process.env.BCRYPT_SALT as string ));
-    const userToCreate =  { ...user, password :hashedPassoword }
+    const hashedPassoword = await bcrypt.hash(
+      user.password as string,
+      parseInt(process.env.BCRYPT_SALT as string),
+    );
+    const userToCreate = { ...user, password: hashedPassoword };
     const userCreated: User = UserRepository.create(userToCreate);
-    const  result = await UserRepository.save(userCreated);
-    const { password , ...withOutPassword} = result; 
+    const result = await UserRepository.save(userCreated);
+    const { password, ...withOutPassword } = result;
     return withOutPassword;
   } catch (error) {
     errorhandler(error);
@@ -68,7 +72,7 @@ export const signUpUser: (user: Partial<User>) => Promise<Partial<User>> = async
 
 export const signInUser: (
   email: string,
-  password: string
+  password: string,
 ) => Promise<Object> = async (email, password) => {
   try {
     const user: NullableOrUndefined<User> = await UserRepository.findOneBy({
@@ -82,12 +86,12 @@ export const signInUser: (
       const refreshToken: string = generateToken(
         user,
         process.env.REFRESH_JWT_SECRET as string,
-        "7d"
+        "7d",
       );
       const accessToken: string = generateToken(
         user,
         process.env.ACCESS_JWT_SECRET as string,
-        "15m"
+        "15m",
       );
       return {
         user: {
@@ -116,12 +120,12 @@ export const signInUser: (
 };
 
 export const loginWithToken: (
-  cookieString: string
+  cookieString: string,
 ) => Promise<Partial<User> | string> = async (cookieString) => {
   try {
     const decoded = jwt.verify(
       cookieString,
-      process.env.ACCESS_JWT_SECRET as string
+      process.env.ACCESS_JWT_SECRET as string,
     );
     if (typeof decoded === "string") {
       return "Invalid Token";
@@ -131,8 +135,8 @@ export const loginWithToken: (
       id: payLoad.id,
     });
     if (user) {
-      const {password , ...noPasswordUser} = user
-      return  noPasswordUser;
+      const { password, ...noPasswordUser } = user;
+      return noPasswordUser;
     }
     return "User is not found";
   } catch (error) {
@@ -151,7 +155,7 @@ export const findAllUsers: () => Promise<User[] | undefined> = async () => {
 };
 
 export const findOneUser: (
-  id: number
+  id: number,
 ) => Promise<NullableOrUndefined<User>> = async (id) => {
   try {
     return await UserRepository.findOneBy({ id });
@@ -162,7 +166,7 @@ export const findOneUser: (
 };
 
 export const removeOneUser: (
-  id: number
+  id: number,
 ) => Promise<DeleteResult | undefined> = async (id) => {
   try {
     const userToDelete = await UserRepository.findOneBy({ id });
@@ -177,7 +181,7 @@ export const removeOneUser: (
 export const modifyOneUser: (
   id: number,
   data: Partial<User>,
-  userImage?: Express.Multer.File
+  userImage?: Express.Multer.File,
 ) => Promise<UpdateResult | undefined> = async (id, data, userImage) => {
   try {
     if (userImage) {
@@ -197,12 +201,30 @@ export const modifyOneUser: (
   }
 };
 
-export const changePasswordService : (password:string , email:string )=> Promise<UpdateResult |undefined>  = async (password, email)=>{
+export const changePasswordService: (
+  password: string,
+  email: string,
+) => Promise<UpdateResult | undefined> = async (password, email) => {
   try {
-    const hashedPassword :string = await bcrypt.hash(password , parseInt(process.env.BCRYPT_SALT as string))
-    return await UserRepository.update({email} , {password :hashedPassword})
+    const hashedPassword: string = await bcrypt.hash(
+      password,
+      parseInt(process.env.BCRYPT_SALT as string),
+    );
+    return await UserRepository.update({ email }, { password: hashedPassword });
   } catch (error) {
     errorhandler(error);
     throw error;
   }
-}
+};
+
+export const findUsersWithPagination: (
+  limit: number,
+  page: number,
+) => Promise<any> = async (limit, page) => {
+  try {
+    return await handlePagination(limit, page, UserRepository as AppRepository);
+  } catch (error) {
+    errorhandler(error);
+    throw error;
+  }
+};

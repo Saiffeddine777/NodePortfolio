@@ -6,11 +6,12 @@ import {
   deleteFromCloudinary,
   uploadToCLoudinary,
 } from "../Adapters/CloudinaryAdapter";
-import { NullableOrUndefined } from "../Types/UtilityTypes";
+import { AppRepository, NullableOrUndefined } from "../Types/UtilityTypes";
+import { handlePagination } from "../Handlers/PaginationHandler";
 
 export const createAPortfolioFile: (
   portfolioFile: Partial<PortfolioFile>,
-  blob?: Express.Multer.File
+  blob?: Express.Multer.File,
 ) => Promise<PortfolioFile> = async (portfolioFile, blob) => {
   try {
     const result = await uploadToCLoudinary(blob);
@@ -38,7 +39,7 @@ export const findAllPortfolioFiles: () => Promise<
 };
 
 export const findOnePortfolioFile: (
-  id: number
+  id: number,
 ) => Promise<PortfolioFile | undefined | null> = async (id) => {
   try {
     return await PortfolioFileRepository.findOneBy({ id: id });
@@ -49,7 +50,7 @@ export const findOnePortfolioFile: (
 };
 
 export const removeOnePortfolioFile: (
-  id: number
+  id: number,
 ) => Promise<DeleteResult> = async (id) => {
   try {
     const portfolioFile: NullableOrUndefined<PortfolioFile> =
@@ -63,11 +64,11 @@ export const removeOnePortfolioFile: (
 };
 
 export const removeAPortfolioFileWithName: (
-  fileName: string
+  fileName: string,
 ) => Promise<DeleteResult | null> = async (fileName) => {
   try {
     const portfolioFile: NullableOrUndefined<PortfolioFile> =
-    await PortfolioFileRepository.findOneBy({ fileName: fileName });
+      await PortfolioFileRepository.findOneBy({ fileName: fileName });
     if (!portfolioFile) {
       return null;
     }
@@ -80,14 +81,32 @@ export const removeAPortfolioFileWithName: (
 };
 
 export const findCVportfolioFiles: (
-  fileNames: string[]
+  fileNames: string[],
 ) => Promise<PortfolioFile[]> = async (fileNames) => {
   try {
-    return await PortfolioFileRepository.find({where : {
-      fileName : In(fileNames)
-   }}) 
+    return await PortfolioFileRepository.find({
+      where: {
+        fileName: In(fileNames),
+      },
+    });
   } catch (error) {
     errorhandler(error);
-    throw error ;
+    throw error;
+  }
+};
+
+export const findWithFilesPagination: (
+  limit: number,
+  page: number,
+) => Promise<any> = async (limit, page) => {
+  try {
+    return await handlePagination(
+      limit,
+      page,
+      PortfolioFileRepository as AppRepository,
+    );
+  } catch (error) {
+    errorhandler(error);
+    throw error;
   }
 };

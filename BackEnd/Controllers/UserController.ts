@@ -5,6 +5,7 @@ import {
   createUser,
   findAllUsers,
   findOneUser,
+  findUsersWithPagination,
   loginWithToken,
   modifyOneUser,
   removeOneUser,
@@ -263,3 +264,15 @@ export const userChangePassword: (
     handleSendingError(error, res);
   }
 };
+
+export const getPaginatedUser : (req:Request<{limit :string, page:string}>, res:Response)=>Promise<void> = async (req,res)=>{
+  try {
+    const limit :number = parseInt(req.params.limit);
+    const page : number = parseInt(req.params.page)
+    const result =await findUsersWithPagination(limit, page);
+    res.status(200).json(result);
+  } catch (error) {
+   errorhandler(error);
+   handleSendingError(error , res) 
+  }
+}

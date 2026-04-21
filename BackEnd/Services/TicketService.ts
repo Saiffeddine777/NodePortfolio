@@ -3,8 +3,9 @@ import { Ticket } from "../Entities/Ticket";
 import { errorhandler } from "../Handlers/ErrorHandlers";
 import JiraHandler from "../Handlers/JiraHandler";
 import { TicketRepository } from "../Repositories/TicketRepository";
-import { JiraIssueFields, NullableOrUndefined } from "../Types/UtilityTypes";
+import { AppRepository, JiraIssueFields, NullableOrUndefined } from "../Types/UtilityTypes";
 import { DeleteResult, UpdateResult } from "typeorm";
+import { handlePagination } from "../Handlers/PaginationHandler";
 
 const jiraHandler: JiraHandler = new JiraHandler();
 
@@ -134,3 +135,12 @@ export const updateSolvingOneTicket: (
     throw error;
   }
 };
+
+export const findTicketsWithPagination : (limit :number , page:number)=>Promise<any> = async(limit , page)=>{
+  try {
+    return await handlePagination(limit , page , TicketRepository as AppRepository)
+  } catch (error) {
+    errorhandler(error);
+    throw error ;
+  }
+}

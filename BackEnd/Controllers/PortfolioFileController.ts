@@ -6,11 +6,13 @@ import {
   findAllPortfolioFiles,
   findCVportfolioFiles,
   findOnePortfolioFile,
+  findWithFilesPagination,
   removeAPortfolioFileWithName,
   removeOnePortfolioFile,
 } from "../Services/PortfolioFileService";
 import { DeleteResult } from "typeorm";
 import { MulterRequest } from "../Types/ExpressTypes";
+import { handleSendingError } from "../Handlers/ErrorHttpHandler";
 
 export const postAPortfolioFile: (
   req: MulterRequest<any, Partial<PortfolioFile>>,
@@ -100,5 +102,21 @@ export const getCVPortfolioFile: (
   } catch (error) {
     errorhandler(error);
     res.status(500).json(error);
+  }
+};
+
+
+export const getPaginatedFiles: (
+  req: Request<{ limit :string , page :string}>,
+  res: Response
+) => Promise<void> = async (req, res) => {
+  try {
+    const limit :number = parseInt(req.params.limit);
+    const page :number = parseInt(req.params.page);
+    const files = await findWithFilesPagination(limit, page);
+    res.status(200).json(files);
+  } catch (error) {
+    errorhandler(error);
+    handleSendingError(error ,res);
   }
 };
