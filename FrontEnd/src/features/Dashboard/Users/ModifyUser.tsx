@@ -24,6 +24,9 @@ type Props = {};
 const ModifyUser = ({}: Props) => {
   const location: Location<{ id?: number }> = useLocation();
   const id = location.state.id;
+  const [selectedFileName, setSelectedFileName] = React.useState<string | null>(
+    null,
+  );
   const navigate = useNavigate();
 
   const signInRef = React.useRef<User>({
@@ -48,7 +51,9 @@ const ModifyUser = ({}: Props) => {
   const [trigg, setTrigg] = React.useState<boolean>(false);
 
   const navigateToUsers = () => {
-    navigate(location.pathname!=="/modifyyourprofile"?"/dashboard/userlist" :"/");
+    navigate(
+      location.pathname !== "/modifyyourprofile" ? "/dashboard/userlist" : "/",
+    );
   };
 
   const handleChange: RefChangerFunction<User> = (event, key) => {
@@ -99,17 +104,17 @@ const ModifyUser = ({}: Props) => {
         nonEmptUserObject.file ? formData : nonEmptUserObject,
         formData.has("file")
           ? { headers: { "Content-Type": "multipart/form-data" } }
-          : undefined
+          : undefined,
       );
 
       handleSuccess("User Update", "User updated successfully");
       setTrigg(!trigg);
     } catch (error) {
       handleComponentError(error);
-    }finally{
-      setTimeout(()=>{
+    } finally {
+      setTimeout(() => {
         window.location.reload();
-      },500)
+      }, 500);
     }
   };
 
@@ -128,11 +133,10 @@ const ModifyUser = ({}: Props) => {
 
   return (
     <>
-      <Button
-        onClick={navigateToUsers}
-        sx={{ mb: 2, textTransform: "none" }}
-      >
-        {location.pathname!=="/modifyyourprofile"?"← Back to Users":"Back Home"}
+      <Button onClick={navigateToUsers} sx={{ mb: 2, textTransform: "none" }}>
+        {location.pathname !== "/modifyyourprofile"
+          ? "← Back to Users"
+          : "Back Home"}
       </Button>
 
       <Paper
@@ -156,60 +160,100 @@ const ModifyUser = ({}: Props) => {
           <FormControl fullWidth>
             <InputLabel>Email address</InputLabel>
             <Input onChange={(e) => handleChange(e, "email")} />
-            <FormHelperText>
-              Current: {userToModify.email}
-            </FormHelperText>
+            <FormHelperText>Current: {userToModify.email}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth>
             <InputLabel>First Name</InputLabel>
             <Input onChange={(e) => handleChange(e, "firstName")} />
-            <FormHelperText>
-              Current: {userToModify.firstName}
-            </FormHelperText>
+            <FormHelperText>Current: {userToModify.firstName}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth>
             <InputLabel>Last Name</InputLabel>
             <Input onChange={(e) => handleChange(e, "lastName")} />
-            <FormHelperText>
-              Current: {userToModify.lastName}
-            </FormHelperText>
+            <FormHelperText>Current: {userToModify.lastName}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth>
             <InputLabel>User Name</InputLabel>
             <Input onChange={(e) => handleChange(e, "userName")} />
-            <FormHelperText>
-              Current: {userToModify.userName}
-            </FormHelperText>
+            <FormHelperText>Current: {userToModify.userName}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth>
             <InputLabel>Phone Number</InputLabel>
             <Input onChange={(e) => handleChange(e, "phoneNumber")} />
-            <FormHelperText>
-              Current: {userToModify.phoneNumber}
-            </FormHelperText>
+            <FormHelperText>Current: {userToModify.phoneNumber}</FormHelperText>
           </FormControl>
 
           <FormControl fullWidth>
             <InputLabel>Occupation</InputLabel>
             <Input onChange={(e) => handleChange(e, "occupation")} />
-            <FormHelperText>
-              Current: {userToModify.occupation}
-            </FormHelperText>
+            <FormHelperText>Current: {userToModify.occupation}</FormHelperText>
           </FormControl>
 
           <Divider sx={{ my: 2 }} />
 
-          <FormControl>
-            <InputLabel shrink>Profile Image</InputLabel>
-            <Input type="file" onChange={(e) => handleChange(e, "file")} />
-            <FormHelperText>
-              Upload only if you want to replace the current image
-            </FormHelperText>
-          </FormControl>
+          <Box
+            onClick={() =>
+              document.getElementById("file-upload-input")?.click()
+            }
+            sx={{
+              border: "2px dashed",
+              borderColor: "primary.main",
+              borderRadius: 2,
+              p: 3,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              backgroundColor: "transparent",
+              "&:hover": {
+                backgroundColor: "primary.main",
+                "& .upload-icon": { transform: "translateY(-3px)" },
+                "& .upload-text": { color: "white" },
+                "& .upload-sub": { color: "rgba(255,255,255,0.8)" },
+              },
+            }}
+          >
+            <input
+              id="file-upload-input"
+              type="file"
+              hidden
+              onChange={(e) => {
+                handleChange(e, "file");
+                const file = (e.target as HTMLInputElement).files?.[0];
+                if (file) setSelectedFileName(file.name);
+              }}
+            />
+            <Typography
+              className="upload-icon"
+              fontSize="2rem"
+              sx={{ transition: "transform 0.2s ease" }}
+            >
+              📷
+            </Typography>
+            <Typography
+              className="upload-text"
+              variant="body2"
+              fontWeight="bold"
+              color="primary.main"
+              sx={{ transition: "color 0.2s ease" }}
+            >
+              {selectedFileName ?? "Click to upload a profile image"}
+            </Typography>
+            <Typography
+              className="upload-sub"
+              variant="caption"
+              color="text.secondary"
+              sx={{ transition: "color 0.2s ease" }}
+            >
+              PNG, JPG, WEBP accepted — replaces current image
+            </Typography>
+          </Box>
 
           <Button
             onClick={handleSubmitModification}
