@@ -15,6 +15,7 @@ jest.mock("../../Controllers/PortfolioFileController", () => ({
   getCVPortfolioFile: jest.fn(),
   getOnePortfolioFile: jest.fn(),
   postAPortfolioFile: jest.fn(),
+  getPaginatedFiles :jest.fn()
 }));
 
 import * as PortfolioFilesController from "../../Controllers/PortfolioFileController";

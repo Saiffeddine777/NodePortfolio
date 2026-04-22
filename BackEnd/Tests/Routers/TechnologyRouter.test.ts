@@ -21,6 +21,7 @@ jest.mock("../../Controllers/TechnologyController", () => ({
   postATechnology: jest.fn(),
   getTechnolgiesByTechType: jest.fn(),
   updateOneTechnology: jest.fn(),
+  getTechnologiesWithPagination :jest.fn()
 }));
 import request from "supertest";
 import * as TechnologyController from "../../Controllers/TechnologyController";

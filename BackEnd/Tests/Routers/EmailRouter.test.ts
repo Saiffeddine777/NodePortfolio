@@ -16,6 +16,7 @@ jest.mock("../../Controllers/EmailController", () => ({
   deleteOneEmail: jest.fn(),
   putOneEmail: jest.fn(),
   sendEmailController: jest.fn(),
+  getPaginatedEmails: jest.fn(),
 }));
 
 import request from "supertest";

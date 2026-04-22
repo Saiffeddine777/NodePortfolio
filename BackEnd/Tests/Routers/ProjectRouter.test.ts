@@ -16,6 +16,7 @@ jest.mock("../../Controllers/ProjectController", () => ({
   getOneProject: jest.fn(),
   postOneProject: jest.fn(),
   putOneProject: jest.fn(),
+  getPaginatedProjects :jest.fn()
 }));
 
 import testApp from "../test-server";
