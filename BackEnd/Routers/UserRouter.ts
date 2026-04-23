@@ -18,6 +18,6 @@ UserRouter.get("/", isAdmin, UserController.getAllUsers);
 UserRouter.delete("/:id", isAdmin, UserController.deleteOneUser);
 UserRouter.put("/:id", uploadImage, UserController.putOneUser);
 UserRouter.post("/logout", UserController.logout);
-UserRouter.get("/getpaginatedusers/:limit/:page", UserController.getPaginatedUser)
+UserRouter.get("/getpaginatedusers/:limit/:page",isAdmin, UserController.getPaginatedUser)
 
 export default UserRouter;

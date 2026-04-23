@@ -11,6 +11,6 @@ PortfolioFileRouter.get("/:id" , PortfolioFileController.getOnePortfolioFile);
 PortfolioFileRouter.delete("/:id",isAdmin , PortfolioFileController.deleteOnePorfolioFile);
 PortfolioFileRouter.delete("/delete/:fileName" , isAdmin , PortfolioFileController.deleteOnePorfolioFileWithName);
 PortfolioFileRouter.get("/cvs/:fullCv/:itcv" , PortfolioFileController.getCVPortfolioFile);
-PortfolioFileRouter.get("/getpaginatedfiles/:limit/:page" , PortfolioFileController.getPaginatedFiles);
+PortfolioFileRouter.get("/getpaginatedfiles/:limit/:page" ,isAdmin,  PortfolioFileController.getPaginatedFiles);
 
 export default PortfolioFileRouter;

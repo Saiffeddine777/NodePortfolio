@@ -11,6 +11,6 @@ TechnologyRouter.get("/:id", TechnologyController.getOneTechnology);
 TechnologyRouter.delete("/:id" , isAdmin, TechnologyController.deleteOneTechnology);
 TechnologyRouter.put("/:id" ,isAdmin,uploadImage, TechnologyController.updateOneTechnology);
 TechnologyRouter.get("/type/:type", TechnologyController.getTechnolgiesByTechType);
-TechnologyRouter.get("/paginate/:limit/:page" , TechnologyController.getTechnologiesWithPagination);
+TechnologyRouter.get("/paginate/:limit/:page" ,isAdmin, TechnologyController.getTechnologiesWithPagination);
 
 export default  TechnologyRouter;

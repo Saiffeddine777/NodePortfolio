@@ -12,6 +12,6 @@ EmailRouter.get("/:id" , EmailController.getOneEmail)
 EmailRouter.delete("/:id", isAdmin , EmailController.deleteOneEmail)
 EmailRouter.put("/:id",isAdmin,  EmailController.putOneEmail)
 EmailRouter.post("/send" , EmailController.sendEmailController)
-EmailRouter.get ("/getpaginatedemails/:limit/:page", EmailController.getPaginatedEmails)
+EmailRouter.get ("/getpaginatedemails/:limit/:page",isAdmin ,EmailController.getPaginatedEmails)
 
 export default  EmailRouter;
