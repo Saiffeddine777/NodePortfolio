@@ -13,7 +13,7 @@ import { handleSendingForgetPasswordEmail } from "../SpecialServices/HandleSendi
 import { handleSendingError } from "../Handlers/ErrorHttpHandler";
 
 export const postAnEMail: (
-  req: Request<any, any, Partial<Email>>,
+  req: Request<any, any, Partial<Email>>, 
   res: Response
 ) => Promise<void> = async (req, res) => {
   try {
