@@ -27,7 +27,6 @@ export const verifyRecaptcha = (allowedActions: string[]) => {
       );
 
       const { action, success, score } = response.data;
-      console.log({ action, success, score });
 
       if (!success || score < 0.5) {
         res.status(403).json({ message: "Spam has been detected" });

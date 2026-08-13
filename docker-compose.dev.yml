@@ -18,7 +18,9 @@ services:
       retries: 5
 
   backend-dev:
-    build: ./BackEnd
+    build:
+      context:  ./BackEnd
+      dockerfile: Dockerfile
     restart: always
     env_file: ./BackEnd/.env
     depends_on:
