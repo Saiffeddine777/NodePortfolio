@@ -7,7 +7,7 @@ import bcrypt from "bcrypt"
 const emailAccount : undefined|string = process.env.ADMIN_ACCOUNT
 const passwordAccount  : undefined | string = process.env.ADMIN_PASSWORD
 
-export default async function createAnAdminifNotExist() : Promise<void> {
+export default async function createAnAdminifNotExist() : Promise<string |void> {
     try {
         const admin :User | null = await UserRepository.findOne({where : {email : process.env.ADMIN_ACCOUNT}})
         if (admin){
@@ -27,7 +27,7 @@ export default async function createAnAdminifNotExist() : Promise<void> {
             verified : true
            })
            await UserRepository.save (createdAdmin)
-           console.log("Admin has been created.")
+           return "Admin has been created."
         }
     } catch (error) {
         errorhandler(error)

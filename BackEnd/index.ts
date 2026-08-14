@@ -45,10 +45,11 @@ app.use("/api/tickets" , TicketRouter);
 DataSource.initialize()
   .then(() => {
     console.log("Data source has been initialised");
-
     app.listen(port , () => console.log(`App running on ${port}`));
     createAnAdminifNotExist()
-      .then(() => {})
+      .then((res) => {
+        console.log(res)
+      })
       .catch((error) => console.log(error));
   })
   .catch((err) => console.error(err));
